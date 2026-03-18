@@ -3,1246 +3,995 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kiarah Pettaway · Shinigami</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet"/>
+<title>Kiarah Pettaway</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&family=Noto+Serif+JP:wght@300;400;700;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #050505;
-  --red: #c0000a;
-  --red-bright: #ff1a1a;
-  --red-dim: rgba(192,0,10,0.15);
-  --ash: #2a2a2a;
-  --bone: #e8e0d0;
-  --parchment: #c8b89a;
-  --ink: #1a0a0a;
-  --muted: #555;
-  --text: #9a8878;
-  --white: #f5f0eb;
+  --bg:#050505;--surface:#0a0505;--panel:#0f0808;--border:#1a0808;
+  --red:#c0000a;--red-hot:#ff1111;--red-dim:rgba(192,0,10,.12);--red-glow:rgba(192,0,10,.35);
+  --bone:#e8e0d0;--parchment:#c8b89a;--muted:#444;--text:#9a8878;--white:#f0ece6;
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'IM Fell English',serif;overflow:hidden;cursor:crosshair;height:100vh;width:100vw}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.5}
+#bg-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Serif JP', serif;
-  overflow-x: hidden;
-  cursor: crosshair;
-}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:1000;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,transform .8s ease}
+#splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.sp-kanji-bg{position:absolute;inset:0;overflow:hidden;z-index:0}
+.sp-kanji{position:absolute;font-family:'Noto Serif JP',serif;font-weight:900;color:rgba(192,0,10,.05);user-select:none;animation:kfloat linear infinite}
+@keyframes kfloat{from{transform:translateY(110vh);opacity:0}5%{opacity:1}95%{opacity:1}to{transform:translateY(-10vh);opacity:0}}
+.sp-book{width:320px;background:#0a0000;border:1px solid #1a0808;border-left:5px solid var(--red);padding:2.5rem 2rem;position:relative;z-index:1;box-shadow:0 0 80px rgba(192,0,10,.18),0 40px 100px rgba(0,0,0,.8)}
+.sp-book::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 28px,rgba(192,0,10,.05) 28px,rgba(192,0,10,.05) 29px);pointer-events:none}
+.sp-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);letter-spacing:.3em;text-transform:uppercase;margin-bottom:1.5rem;opacity:.7;position:relative;z-index:1}
+.sp-name{font-family:'Cinzel',serif;font-size:2rem;font-weight:900;color:var(--white);line-height:1.2;min-height:2.5rem;position:relative;z-index:1}
+.sp-sub{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--red);letter-spacing:.18em;text-transform:uppercase;margin-top:.75rem;min-height:1rem;position:relative;z-index:1;opacity:0;transition:opacity .5s}
+.sp-sub.show{opacity:1}
+.sp-cur{display:inline-block;width:2px;height:1.6rem;background:var(--red);vertical-align:middle;margin-left:2px;animation:cblink .7s step-end infinite}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+.sp-enter{margin-top:2rem;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;opacity:0;transition:opacity .5s;cursor:pointer;animation:ep 2s ease-in-out infinite}
+.sp-enter.show{opacity:1}
+@keyframes ep{0%,100%{color:var(--muted)}50%{color:var(--red)}}
 
-/* CUSTOM CURSOR */
-body * { cursor: crosshair; }
+/* PAGE WIPE */
+.page-wipe{position:fixed;inset:0;background:#000;z-index:900;transform:scaleY(0);transform-origin:top;transition:transform .35s cubic-bezier(.76,0,.24,1);pointer-events:none}
+.page-wipe.in{transform:scaleY(1)}
+.page-wipe.out{transform:scaleY(0);transform-origin:bottom}
 
-/* CANVAS FOR PARTICLES */
-#canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* BLOOD DRIP TOP */
-.blood-drip {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 80px;
-  z-index: 200;
-  pointer-events: none;
-  display: flex;
-  gap: 0;
-}
-.drip {
-  width: 3px;
-  background: linear-gradient(180deg, var(--red) 0%, transparent 100%);
-  animation: drip-fall linear infinite;
-  transform-origin: top center;
-  border-radius: 0 0 50% 50%;
-}
-@keyframes drip-fall {
-  0% { height: 0; opacity: 1; }
-  70% { opacity: 1; }
-  100% { height: 100px; opacity: 0; }
-}
+/* DRIPS */
+.drip-bar{position:fixed;top:0;left:0;right:0;height:60px;pointer-events:none;z-index:199;display:flex}
+.drip{width:2px;background:linear-gradient(180deg,var(--red) 0%,transparent 100%);border-radius:0 0 50% 50%;animation:drip linear infinite}
+@keyframes drip{0%{height:0;opacity:.7}70%{opacity:.7}100%{height:60px;opacity:0}}
 
 /* NAV */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.2rem 3rem;
-  background: linear-gradient(180deg, rgba(5,5,5,0.98) 0%, transparent 100%);
-}
-.nav-sigil {
-  font-family: 'Cinzel', serif;
-  font-size: 1rem;
-  color: var(--red);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(192,0,10,0.5);
-}
-.nav-links { display: flex; gap: 2.5rem; list-style: none; }
-.nav-links a {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--muted);
-  text-decoration: none;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  transition: color 0.3s;
-  position: relative;
-}
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -3px; left: 0; right: 0;
-  height: 1px;
-  background: var(--red);
-  transform: scaleX(0);
-  transition: transform 0.3s;
-}
-.nav-links a:hover { color: var(--red); }
-.nav-links a:hover::after { transform: scaleX(1); }
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(5,5,5,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+nav.show{transform:translateY(0)}
+.nav-sigil{font-family:'Cinzel',serif;font-size:.9rem;color:var(--white);letter-spacing:.2em;cursor:pointer;transition:color .2s}
+.nav-sigil:hover{color:var(--red)}
+.nav-sigil span{color:var(--red)}
+.nav-links{display:flex;gap:0;list-style:none}
+.nav-btn{background:none;border:none;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;cursor:crosshair;padding:.5rem 1.1rem;transition:color .2s;position:relative}
+.nav-btn::after{content:'';position:absolute;bottom:-1px;left:1.1rem;right:1.1rem;height:1px;background:var(--red);transform:scaleX(0);transition:transform .3s}
+.nav-btn:hover{color:var(--red)}
+.nav-btn:hover::after,.nav-btn.active::after{transform:scaleX(1)}
+.nav-btn.active{color:var(--red)}
+.nav-kanji{font-family:'Noto Serif JP',serif;font-size:.65rem;color:var(--red);opacity:.6;letter-spacing:.05em}
 
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 6rem 2rem 4rem;
-}
+/* PAGES */
+.page{position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;z-index:10;opacity:0;pointer-events:none;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.page.exit-up{opacity:0;transform:translateY(-28px);pointer-events:none}
 
-/* RAVEN SVG */
-.raven-container {
-  position: absolute;
-  top: 15%;
-  right: 8%;
-  opacity: 0;
-  animation: raven-appear 2s ease 0.5s forwards;
-}
-@keyframes raven-appear {
-  0% { opacity: 0; transform: translateY(-30px) rotate(-10deg); }
-  100% { opacity: 0.6; transform: translateY(0) rotate(0deg); }
-}
-.raven-container svg {
-  width: 120px;
-  filter: drop-shadow(0 0 20px rgba(192,0,10,0.3));
-  animation: raven-perch 4s ease-in-out infinite;
-}
-@keyframes raven-perch {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-}
+/* HOME */
+.home-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem 4rem;text-align:center;position:relative;z-index:2}
+.home-eyebrow{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--red);letter-spacing:.32em;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.75rem}
+.home-eyebrow::before,.home-eyebrow::after{content:'✦';font-size:.45rem}
+.home-name{font-family:'Cinzel',serif;font-size:clamp(3rem,9vw,7.5rem);font-weight:900;line-height:.95;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 0 80px rgba(192,0,10,.12);margin-bottom:.5rem}
+.home-name-first{display:block;color:#ffffff;min-height:1.1em}
+.home-name-last{display:block;color:var(--red);font-size:.5em;letter-spacing:.45em;text-shadow:0 0 40px var(--red-glow)}
+.type-cur{display:inline-block;width:3px;height:.72em;background:var(--red);vertical-align:middle;margin-left:3px;animation:cblink .7s step-end infinite}
+.home-rule{width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:1.4rem auto}
+.home-subtitle{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--parchment);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.2rem}
+.home-decree{font-family:'IM Fell English',serif;font-style:italic;font-size:.95rem;color:var(--text);max-width:480px;line-height:2;margin:0 auto 2rem;border:1px solid rgba(192,0,10,.18);padding:1rem 1.5rem;position:relative}
+.home-decree::before{content:'§';position:absolute;left:-10px;top:50%;transform:translateY(-50%);background:var(--bg);padding:0 4px;color:var(--red);font-style:normal}
+.home-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;max-width:580px;margin:0 auto 2.5rem}
+.home-tag{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);border:1px solid #1a0808;padding:.2rem .7rem;letter-spacing:.08em;text-transform:uppercase;transition:all .3s;cursor:default}
+.home-tag:hover,.home-tag.lit{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.nav-cards{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center}
+.nav-card{background:rgba(10,5,5,.8);border:1px solid var(--border);padding:.9rem 1.5rem;cursor:pointer;transition:all .3s;font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;position:relative;overflow:hidden;text-align:center}
+.nav-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transition:transform .3s}
+.nav-card:hover{border-color:rgba(192,0,10,.3);color:var(--red);background:rgba(192,0,10,.04);transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,0,10,.09)}
+.nav-card:hover::before{transform:scaleX(1)}
+.nc-kanji{display:block;font-family:'Noto Serif JP',serif;font-size:1.1rem;color:rgba(192,0,10,.3);margin-bottom:.25rem;transition:color .3s}
+.nav-card:hover .nc-kanji{color:var(--red)}
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:.4}
+.scroll-cue span{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.scroll-line{width:1px;height:28px;background:linear-gradient(180deg,var(--red),transparent);animation:sbob 2s ease-in-out infinite}
+@keyframes sbob{0%,100%{opacity:.4}50%{opacity:1}}
 
-/* DEATH NOTE BOOK */
-.deathnote-accent {
-  position: absolute;
-  top: 20%;
-  left: 5%;
-  opacity: 0;
-  animation: notebook-appear 1.5s ease 1s forwards;
-  font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  color: var(--red);
-  letter-spacing: 0.1em;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  border-right: 1px solid var(--red);
-  padding-right: 0.5rem;
-  line-height: 2;
-  opacity: 0;
-}
-@keyframes notebook-appear {
-  to { opacity: 0.4; }
-}
-
-/* JAPANESE CHARACTERS */
-.kanji-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: -1;
-}
-.kanji-char {
-  position: absolute;
-  font-family: 'Noto Serif JP', serif;
-  font-size: clamp(3rem, 8vw, 8rem);
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(192,0,10,0.08);
-  animation: kanji-drift linear infinite;
-  user-select: none;
-}
-@keyframes kanji-drift {
-  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-20vh) rotate(20deg); opacity: 0; }
-}
-
-/* HERO CONTENT */
-.hero-eyebrow {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--red);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  opacity: 0;
-  animation: reveal-up 0.8s ease 0.3s forwards;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-.hero-eyebrow::before, .hero-eyebrow::after {
-  content: '✦';
-  font-size: 0.5rem;
-  color: var(--red);
-}
-
-.hero-name {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(3.5rem, 9vw, 8rem);
-  font-weight: 900;
-  color: var(--white);
-  line-height: 0.9;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: reveal-up 1s ease 0.5s forwards;
-  text-shadow:
-    0 0 60px rgba(192,0,10,0.2),
-    0 2px 0 rgba(0,0,0,0.8);
-}
-.hero-name span {
-  display: block;
-  color: var(--red);
-  font-size: 0.55em;
-  letter-spacing: 0.4em;
-  text-shadow: 0 0 40px rgba(192,0,10,0.6);
-}
-
-.hero-rule {
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
-  margin: 2rem auto;
-  opacity: 0;
-  animation: reveal-fade 0.8s ease 1s forwards;
-}
-
-.hero-subtitle {
-  font-size: 0.95rem;
-  color: var(--text);
-  font-weight: 300;
-  max-width: 500px;
-  margin: 0 auto 2.5rem;
-  line-height: 2;
-  letter-spacing: 0.08em;
-  opacity: 0;
-  animation: reveal-up 0.8s ease 1.2s forwards;
-}
-
-.hero-decree {
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  color: var(--parchment);
-  letter-spacing: 0.2em;
-  border: 1px solid rgba(192,0,10,0.3);
-  padding: 0.75rem 2rem;
-  margin-bottom: 2.5rem;
-  opacity: 0;
-  animation: reveal-fade 1s ease 1.5s forwards;
-  position: relative;
-}
-.hero-decree::before {
-  content: '§';
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--bg);
-  padding: 0 4px;
-  color: var(--red);
-  font-size: 1rem;
-}
-
-.hero-tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  max-width: 600px;
-  margin: 0 auto 3rem;
-  opacity: 0;
-  animation: reveal-up 0.8s ease 1.7s forwards;
-}
-.hero-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--muted);
-  border: 1px solid #1a1a1a;
-  padding: 0.2rem 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: all 0.3s;
-}
-.hero-tag:hover, .hero-tag.marked {
-  border-color: var(--red);
-  color: var(--red);
-  background: var(--red-dim);
-  box-shadow: 0 0 15px rgba(192,0,10,0.2);
-}
-
-.scroll-prompt {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  opacity: 0;
-  animation: reveal-fade 1s ease 2.5s forwards;
-}
-.scroll-prompt span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  color: var(--muted);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.scroll-arrow {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, var(--red), transparent);
-  animation: scroll-pulse 2s ease-in-out infinite;
-}
-@keyframes scroll-pulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.2); }
-}
-
-/* GENERAL ANIMATIONS */
-@keyframes reveal-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes reveal-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* SECTION WRAPPER */
-.section-wrap {
-  position: relative;
-  z-index: 1;
-  padding: 6rem 3rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* SECTION HEADER */
-.sec-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3.5rem;
-}
-.sec-kanji {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 3rem;
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(192,0,10,0.4);
-  line-height: 1;
-}
-.sec-title-block { display: flex; flex-direction: column; gap: 0.2rem; }
-.sec-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--red);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-}
-.sec-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.6rem, 3vw, 2.5rem);
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 0.05em;
-}
-
-/* DIVIDER */
-.blood-divider {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--red) 0%, rgba(192,0,10,0.3) 40%, transparent 70%);
-  margin: 0 3rem;
-  max-width: calc(1100px - 6rem);
-  position: relative;
-  z-index: 1;
-  opacity: 0.4;
-}
-
-/* PROJECT CARDS */
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.project-card {
-  background: rgba(10,5,5,0.8);
-  border: 1px solid #1a0808;
-  padding: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 2px; height: 0;
-  background: var(--red);
-  transition: height 0.4s ease;
-}
-.project-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(192,0,10,0.03) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.project-card:hover::before { height: 100%; }
-.project-card:hover::after { opacity: 1; }
-.project-card:hover {
-  border-color: rgba(192,0,10,0.3);
-  transform: translateX(4px);
-  box-shadow: -4px 0 30px rgba(192,0,10,0.1), 20px 0 60px rgba(0,0,0,0.5);
-}
-
-.card-top { display: flex; align-items: flex-start; justify-content: space-between; }
-.card-icon { font-size: 1.3rem; }
-
-.badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.15rem 0.5rem;
-}
-.badge-done { color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
-.badge-wip  { color: var(--red); border: 1px solid rgba(192,0,10,0.3); }
-.badge-award { color: #d4af37; border: 1px solid rgba(212,175,55,0.3); }
-
-.card-title {
-  font-family: 'Cinzel', serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.4;
-  letter-spacing: 0.03em;
-}
-.card-context {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  margin-top: -0.5rem;
-}
-.card-desc { font-size: 0.83rem; color: var(--text); line-height: 1.8; flex: 1; }
-
-.card-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.chip {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  padding: 0.12rem 0.45rem;
-  letter-spacing: 0.06em;
-}
-.chip-r { color: var(--red); background: rgba(192,0,10,0.06); border: 1px solid rgba(192,0,10,0.15); }
-.chip-g { color: #666; background: rgba(100,100,100,0.06); border: 1px solid rgba(100,100,100,0.15); }
-
-.card-links {
-  display: flex; gap: 1rem; padding-top: 0.75rem;
-  border-top: 1px solid #1a0808; flex-wrap: wrap;
-}
-.card-link {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--muted);
-  text-decoration: none;
-  letter-spacing: 0.08em;
-  transition: color 0.3s;
-}
-.card-link:hover { color: var(--red); }
-
-/* SKILLS GRID */
-.skills-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
-.skill-card {
-  background: rgba(10,5,5,0.8);
-  border: 1px solid #1a0808;
-  padding: 1.4rem;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.skill-card::after {
-  content: attr(data-kanji);
-  position: absolute;
-  bottom: -10px; right: 5px;
-  font-family: 'Noto Serif JP', serif;
-  font-size: 4rem;
-  font-weight: 900;
-  color: rgba(192,0,10,0.04);
-  pointer-events: none;
-  line-height: 1;
-}
-.skill-card:hover { border-color: rgba(192,0,10,0.2); }
-.skill-card h3 {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  color: var(--red);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin-bottom: 0.9rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #1a0808;
-}
-.skill-items { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.skill-pill {
-  font-size: 0.78rem;
-  color: var(--text);
-  background: rgba(20,10,10,0.8);
-  border: 1px solid #1e1010;
-  padding: 0.2rem 0.6rem;
-  transition: all 0.25s;
-}
-.skill-pill:hover { border-color: var(--red); color: var(--bone); }
-
-/* CERTS */
-.certs-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 2.5rem;
-}
-.cert-tile {
-  background: rgba(10,5,5,0.8);
-  border: 1px solid #1a0808;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  transition: all 0.3s;
-}
-.cert-tile:hover { border-color: rgba(192,0,10,0.3); transform: translateY(-2px); }
-.cert-mark { font-size: 1rem; }
-.cert-name { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--white); font-weight: 700; }
-.cert-issuer { font-size: 0.7rem; color: var(--muted); }
-
-/* EXPERIENCE */
-.exp-item {
-  display: grid;
-  grid-template-columns: 1px 1fr;
-  gap: 0 2.5rem;
-  margin-bottom: 2.5rem;
-}
-.exp-spine {
-  width: 1px;
-  background: linear-gradient(180deg, var(--red), #1a0808);
-  position: relative;
-}
-.exp-spine::before {
-  content: '✦';
-  position: absolute;
-  top: 2px;
-  left: -7px;
-  font-size: 0.6rem;
-  color: var(--red);
-  text-shadow: 0 0 10px var(--red);
-}
-.exp-body {}
-.exp-role { font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.15rem; }
-.exp-company { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--red); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.1rem; }
-.exp-date { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); margin-bottom: 0.75rem; }
-.exp-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-.exp-list li { font-size: 0.85rem; color: var(--text); padding-left: 1.2rem; position: relative; line-height: 1.7; }
-.exp-list li::before { content: '—'; position: absolute; left: 0; color: var(--red); font-size: 0.7rem; }
+/* SHARED */
+.sec-page{padding:7rem 3rem 4rem;max-width:1100px;margin:0 auto;position:relative;z-index:2}
+.sec-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:3.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.sec-kanji{font-family:'Noto Serif JP',serif;font-size:3.5rem;font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(192,0,10,.3);line-height:1;flex-shrink:0}
+.sec-label{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--red);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.25rem}
+.sec-title{font-family:'Cinzel',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;color:var(--white);letter-spacing:.04em}
+.blood-line{width:100%;height:1px;background:linear-gradient(90deg,var(--red),rgba(192,0,10,.2),transparent);opacity:.3;margin:2.5rem 0}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
 /* ABOUT */
-.about-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; }
-.about-text p { font-size: 0.9rem; color: var(--text); line-height: 2; margin-bottom: 1.2rem; }
-.about-text strong { color: var(--white); }
-.about-text .red { color: var(--red); }
-.about-text .scroll-quote {
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem;
-  color: var(--parchment);
-  border-left: 2px solid var(--red);
-  padding-left: 1rem;
-  margin: 1.5rem 0;
-  font-style: italic;
-  line-height: 1.9;
-}
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:4rem;align-items:start}
+.about-text p{font-size:.95rem;color:var(--text);line-height:2;margin-bottom:1.2rem}
+.about-text strong{color:var(--white);font-style:normal}
+.about-text .red{color:var(--red)}
+.scroll-quote{font-family:'Cinzel',serif;font-size:.85rem;color:var(--parchment);border-left:2px solid var(--red);padding-left:1rem;margin:1.5rem 0;font-style:italic;line-height:1.9}
+.purple-banner{background:linear-gradient(135deg,rgba(60,0,80,.22),rgba(30,0,50,.18));border:1px solid rgba(100,0,150,.22);border-left:3px solid #9b30ff;padding:1.5rem;margin-bottom:2rem}
+.purple-label{font-family:'Space Mono',monospace;font-size:.58rem;color:#9b30ff;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem}
+.purple-text{font-size:.9rem;color:var(--text);line-height:1.9}
+.purple-text strong{color:var(--white)}
+.affiliations{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.affiliations h4{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--red);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem}
+.affil-item{font-size:.82rem;color:var(--text);padding:.3rem 0;border-bottom:1px solid rgba(26,8,8,.5);display:flex;align-items:center;gap:.5rem}
+.affil-item::before{content:'✦';color:var(--red);font-size:.5rem}
+.contact-card{background:rgba(10,5,5,.9);border:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1.3rem;position:sticky;top:7rem}
+.contact-card h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--white);letter-spacing:.05em}
+.c-rule{height:1px;background:linear-gradient(90deg,var(--red),transparent);opacity:.3}
+.c-row{display:flex;flex-direction:column;gap:.2rem}
+.c-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.c-val{font-size:.87rem;color:var(--text)}
+.c-val a{color:var(--red);text-decoration:none}
+.c-val a:hover{text-shadow:0 0 12px var(--red-glow)}
+.btn-contact{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.15em;padding:.8rem 1rem;background:transparent;border:1px solid var(--red);color:var(--red);text-decoration:none;text-align:center;display:block;transition:all .3s;cursor:crosshair}
+.btn-contact:hover{background:var(--red);color:var(--white);box-shadow:0 0 28px var(--red-glow)}
 
-.contact-scroll {
-  background: linear-gradient(160deg, rgba(15,5,5,0.9) 0%, rgba(10,3,3,0.95) 100%);
-  border: 1px solid #1a0808;
-  padding: 2rem;
-  position: sticky;
-  top: 5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.4rem;
-}
-.contact-scroll h3 {
-  font-family: 'Cinzel', serif;
-  font-size: 1.1rem;
-  color: var(--white);
-  letter-spacing: 0.05em;
-}
-.c-row { display: flex; flex-direction: column; gap: 0.2rem; }
-.c-label { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
-.c-val { font-size: 0.85rem; color: var(--text); }
-.c-val a { color: var(--red); text-decoration: none; }
-.c-val a:hover { text-shadow: 0 0 12px rgba(192,0,10,0.5); }
-.c-divider { height: 1px; background: linear-gradient(90deg, var(--red), transparent); opacity: 0.3; }
-.btn-scroll {
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 0.8rem 1rem;
-  background: transparent;
-  border: 1px solid var(--red);
-  color: var(--red);
-  text-decoration: none;
-  text-align: center;
-  display: block;
-  transition: all 0.3s;
-  cursor: crosshair;
-}
-.btn-scroll:hover {
-  background: var(--red);
-  color: var(--white);
-  box-shadow: 0 0 30px rgba(192,0,10,0.3);
-}
+/* EXPERIENCE */
+.exp-item{display:grid;grid-template-columns:1px 1fr;gap:0 2.5rem;margin-bottom:3rem}
+.exp-spine{width:1px;background:linear-gradient(180deg,var(--red),#1a0808 85%);position:relative}
+.exp-spine::before{content:'✦';position:absolute;top:4px;left:-7px;font-size:.6rem;color:var(--red);text-shadow:0 0 10px var(--red)}
+.exp-role{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:.15rem;letter-spacing:.03em}
+.exp-company{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.1rem}
+.exp-date{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);margin-bottom:.85rem}
+.exp-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.exp-list li{font-size:.88rem;color:var(--text);padding-left:1.2rem;position:relative;line-height:1.8}
+.exp-list li::before{content:'—';position:absolute;left:0;color:var(--red);font-size:.7rem}
+.exp-list li strong{color:var(--white)}
 
-/* PURPLE TEAM BANNER */
-.purple-banner {
-  background: linear-gradient(135deg, rgba(60,0,80,0.3) 0%, rgba(30,0,60,0.2) 50%, rgba(192,0,10,0.15) 100%);
-  border: 1px solid rgba(100,0,150,0.3);
-  border-left: 3px solid #9b30ff;
-  padding: 1.5rem 2rem;
-  margin-bottom: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-.purple-banner::before {
-  content: '⚔';
-  position: absolute;
-  right: 1.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2rem;
-  opacity: 0.15;
-}
-.purple-banner-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: #9b30ff;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-.purple-banner-text {
-  font-size: 0.88rem;
-  color: var(--text);
-  line-height: 1.8;
-}
-.purple-banner-text strong { color: var(--white); }
+/* SKILLS */
+.certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;margin-bottom:2.5rem}
+.cert-tile{background:rgba(10,5,5,.8);border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;transition:all .3s;cursor:default}
+.cert-tile:hover{border-color:rgba(192,0,10,.3);transform:translateY(-2px)}
+.cert-mark{font-size:.9rem}
+.cert-name{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--white);font-weight:700;line-height:1.4}
+.cert-issuer{font-size:.7rem;color:var(--muted)}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.skill-card{background:rgba(10,5,5,.8);border:1px solid var(--border);padding:1.4rem;transition:border-color .3s;position:relative;overflow:hidden}
+.skill-card::after{content:attr(data-kanji);position:absolute;bottom:-8px;right:4px;font-family:'Noto Serif JP',serif;font-size:4rem;font-weight:900;color:rgba(192,0,10,.04);pointer-events:none;line-height:1}
+.skill-card:hover{border-color:rgba(192,0,10,.2)}
+.skill-card h3{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.skill-items{display:flex;flex-wrap:wrap;gap:.35rem}
+.skill-pill{font-size:.78rem;color:var(--text);background:rgba(15,8,8,.8);border:1px solid #1e1010;padding:.2rem .6rem;transition:all .25s;cursor:default}
+.skill-pill:hover{border-color:var(--red);color:var(--bone)}
 
-/* FOOTER */
-footer {
-  border-top: 1px solid #1a0808;
-  padding: 2.5rem 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 1;
-}
-.footer-sigil {
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-}
-.footer-sigil span { color: var(--red); }
+/* PROJECTS */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem}.projects-grid-wrap{display:flex;flex-direction:column;gap:0}.projects-grid-secondary{opacity:.9}
+.project-card{background:rgba(10,5,5,.9);border:1px solid var(--border);padding:1.75rem;display:flex;flex-direction:column;gap:1rem;transition:all .35s;position:relative;overflow:hidden;cursor:pointer}
+.project-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:0;background:linear-gradient(180deg,var(--red),transparent);transition:height .4s ease}
+.project-card:hover::before{height:100%}
+.project-card:hover{border-color:rgba(192,0,10,.25);transform:translateX(4px);box-shadow:-4px 0 28px rgba(192,0,10,.07),20px 0 60px rgba(0,0,0,.4)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.card-icon{font-size:1.3rem;flex-shrink:0}
+.badge{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;flex-shrink:0}
+.badge-done{color:#4caf50;border:1px solid rgba(76,175,80,.3)}
+.badge-wip{color:var(--red);border:1px solid rgba(192,0,10,.3)}
+.badge-award{color:#d4af37;border:1px solid rgba(212,175,55,.3)}
+.card-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--white);line-height:1.4;letter-spacing:.02em}
+.card-context{font-family:'Space Mono',monospace;font-size:.57rem;color:var(--muted);letter-spacing:.07em;margin-top:-.4rem}
+.card-desc{font-size:.85rem;color:var(--text);line-height:1.8;flex:1}
+.card-stack{display:flex;flex-wrap:wrap;gap:.3rem}
+.chip{font-family:'Space Mono',monospace;font-size:.55rem;padding:.12rem .45rem}
+.chip-r{color:var(--red);background:rgba(192,0,10,.06);border:1px solid rgba(192,0,10,.15)}
+.chip-g{color:#666;background:rgba(100,100,100,.06);border:1px solid rgba(100,100,100,.15)}
+.card-footer{display:flex;align-items:center;justify-content:flex-end;padding-top:.75rem;border-top:1px solid var(--border)}
+.card-hint{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);letter-spacing:.08em;transition:color .2s}
+.project-card:hover .card-hint{color:var(--red)}
 
-/* SCROLL REVEAL */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s ease;padding:1.5rem}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#0a0303;border:1px solid #2a0808;border-top:2px solid var(--red);max-width:760px;width:100%;max-height:88vh;overflow-y:auto;transform:translateY(20px);transition:transform .35s ease}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;padding:1.5rem 1.75rem 1rem;border-bottom:1px solid var(--border);gap:1rem;position:sticky;top:0;background:#0a0303;z-index:10}
+.modal-title{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--white);font-weight:700;letter-spacing:.03em}
+.modal-context{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);margin-top:.25rem;letter-spacing:.07em}
+.modal-close{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--red);background:none;border:1px solid var(--border);padding:.3rem .7rem;cursor:pointer;transition:all .2s;flex-shrink:0}
+.modal-close:hover{border-color:var(--red);background:rgba(192,0,10,.1)}
+.modal-body{padding:1.5rem 1.75rem 2rem;display:flex;flex-direction:column;gap:1.25rem}
+.modal-desc{font-size:.92rem;color:var(--text);line-height:1.9}
+.modal-stack{display:flex;flex-wrap:wrap;gap:.35rem}
+.modal-links{display:flex;flex-direction:column;gap:.5rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.modal-links-label{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.25rem}
+.modal-link-row{display:flex;align-items:center;gap:.75rem;padding:.6rem .9rem;border:1px solid var(--border);transition:all .2s;text-decoration:none}
+.modal-link-row:hover{border-color:rgba(192,0,10,.4);background:rgba(192,0,10,.04)}
+.modal-link-icon{font-size:.85rem;flex-shrink:0}
+.modal-link-text{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text);letter-spacing:.05em;flex:1}
+.modal-link-url{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-link-row:hover .modal-link-text{color:var(--red)}
 
-@media (max-width: 900px) {
-  .hero-inner, .about-layout, .skills-grid { grid-template-columns: 1fr; }
-  .skills-grid { grid-template-columns: 1fr 1fr; }
-  nav { padding: 1rem 1.5rem; }
-  .section-wrap { padding: 4rem 1.5rem; }
-  footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; }
+/* RESPONSIVE */
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:2rem}.skills-grid{grid-template-columns:1fr 1fr}nav{padding:1rem 1.5rem}.sec-page{padding:6rem 1.5rem 3rem}.nav-kanji{display:none}}
+@media(max-width:600px){.skills-grid{grid-template-columns:1fr}.nav-cards{flex-direction:column;align-items:center}}
+
+/* ══ SCROLL PROGRESS BAR ══ */
+.scroll-progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--red);z-index:9999;width:0%;transition:width .1s linear;box-shadow:0 0 8px var(--red);}
+
+/* ══ HAMBURGER NAV ══ */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.5rem;background:none;border:none}
+.nav-hamburger span{display:block;width:22px;height:1px;background:var(--red);transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.nav-mobile-menu{display:none;position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:195;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-btn{background:none;border:none;font-family:'Space Mono',monospace;font-size:1rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:.75rem 2rem;transition:color .2s;border-bottom:1px solid #1a0808;width:200px;text-align:center}
+.nav-mobile-btn:hover{color:var(--red)}
+
+/* ══ RESUME DOWNLOAD BTN ══ */
+.btn-resume{display:inline-flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;padding:.6rem 1.2rem;background:transparent;border:1px solid rgba(192,0,10,.4);color:var(--red);text-decoration:none;transition:all .3s;cursor:crosshair}
+.btn-resume:hover{background:var(--red);color:var(--white);box-shadow:0 0 20px var(--red-glow)}
+
+/* ══ CURRENTLY STRIP ══ */
+.currently-strip{background:rgba(10,3,3,.9);border:1px solid var(--border);border-left:2px solid var(--red);padding:.85rem 1.5rem;margin-bottom:2rem;display:flex;flex-direction:column;gap:.5rem}
+.currently-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.25rem}
+.currently-item{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text);display:flex;align-items:center;gap:.75rem;line-height:1.6}
+.currently-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-live{background:var(--red);box-shadow:0 0 8px var(--red);animation:dotpulse 2s infinite}
+.dot-active{background:#d4af37;box-shadow:0 0 8px #d4af37;animation:dotpulse 2s infinite .5s}
+.dot-plan{background:#666}
+@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ══ PROJECT GROUPS ══ */
+.proj-group-label{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--red);letter-spacing:.25em;text-transform:uppercase;margin-bottom:1rem;margin-top:2.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.proj-group-label::before{content:'';display:block;width:20px;height:1px;background:var(--red)}
+.proj-group-label:first-child{margin-top:0}
+
+/* ══ CLICKABLE SKILL PILLS ══ */
+.skill-pill{cursor:pointer;position:relative}
+.skill-pill.has-story{border-color:rgba(192,0,10,.25)}
+.skill-pill.has-story::after{content:'·';position:absolute;top:0;right:2px;font-size:.5rem;color:var(--red);line-height:1}
+
+/* SKILL STORY TOOLTIP */
+.skill-tooltip{position:fixed;z-index:800;background:#0a0303;border:1px solid var(--red);padding:1rem 1.25rem;max-width:320px;font-family:'IM Fell English',serif;font-size:.82rem;color:var(--text);line-height:1.8;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 8px 32px rgba(0,0,0,.8)}
+.skill-tooltip.show{opacity:1}
+.skill-tooltip-title{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem}
+
+/* ══ NAME ALIAS LABEL ══ */
+.name-alias{display:block;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.2em;text-transform:lowercase;margin-top:.25rem;opacity:0;transition:opacity .3s}
+.name-alias.show{opacity:1}
+
+/* ══ PAGE ATMOSPHERE ══ */
+#page-about::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(100,0,180,.04) 0%,transparent 60%);pointer-events:none;z-index:1}
+#page-experience::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 80% 30%,rgba(192,0,10,.04) 0%,transparent 60%);pointer-events:none;z-index:1}
+#page-skills::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(192,0,10,.012) 40px,rgba(192,0,10,.012) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(192,0,10,.012) 40px,rgba(192,0,10,.012) 41px);pointer-events:none;z-index:1}
+#page-projects::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(192,0,10,.05) 0%,transparent 60%);pointer-events:none;z-index:1}
+
+/* ══ CASE FILE EXPERIENCE ══ */
+.case-file-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:2rem;opacity:.6}
+.case-file-label span{color:var(--red)}
+
+/* ══ IMPROVED MOBILE ══ */
+@media(max-width:900px){
+  .about-grid{grid-template-columns:1fr;gap:2rem}
+  .skills-grid{grid-template-columns:1fr 1fr}
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .nav-kanji{display:none}
+  .nav-hamburger{display:flex}
+  .sec-page{padding:5.5rem 1.25rem 3rem}
+  .home-name{font-size:clamp(2.5rem,12vw,5rem)}
+  .home-decree{font-size:.85rem;padding:.75rem 1rem}
+  .home-tags{gap:.35rem}
+  .home-tag{font-size:.52rem}
+  .nav-cards{flex-direction:row;flex-wrap:wrap;gap:.5rem}
+  .nav-card{padding:.7rem 1rem;font-size:.55rem}
+  .sp-book{width:calc(100vw - 3rem);max-width:320px}
+  .sp-name{font-size:1.6rem}
+  .projects-grid{grid-template-columns:1fr}
+  .certs-grid{grid-template-columns:1fr 1fr}
+  .contact-card{position:static}
+  .currently-strip{padding:.75rem 1rem}
+}
+@media(max-width:600px){
+  .skills-grid{grid-template-columns:1fr}
+  .nav-cards{flex-direction:column;align-items:center}
+  .home-name{font-size:clamp(2.2rem,13vw,4rem)}
+  .sec-title{font-size:1.6rem}
+  .certs-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
+<div class="scroll-progress-bar" id="progress-bar"></div>
+<canvas id="bg-canvas"></canvas>
+<div class="page-wipe" id="page-wipe"></div>
+<div class="drip-bar" id="drip-bar"></div>
 
-<!-- BLOOD DRIPS -->
-<div class="blood-drip" id="drips"></div>
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-kanji-bg" id="sp-kanji"></div>
+  <div class="sp-book">
+    <div class="sp-label">&#x6B7B;&#x4EA1;&#x30CE;&#x30FC;&#x30C8; &nbsp;&#xB7;&nbsp; PORTFOLIO</div>
+    <div class="sp-name" id="sp-text"><span class="sp-cur"></span></div>
+    <div class="sp-sub" id="sp-sub">IAM &amp; Security Operations Analyst</div>
+  </div>
+  <div class="sp-enter" id="sp-enter" onclick="enterSite()">&#x2736; &nbsp; Enter &nbsp; &#x2736;</div>
+</div>
 
-<!-- KANJI BG -->
-<div class="kanji-bg" id="kanji-bg"></div>
-
-<nav>
-  <div class="nav-sigil">K · Pettaway</div>
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-sigil" onclick="goPage('home')">K<span>&#xB7;</span>P</div>
   <ul class="nav-links">
-    <li><a href="#projects">案件</a></li>
-    <li><a href="#experience">経験</a></li>
-    <li><a href="#skills">技能</a></li>
-    <li><a href="#about">自己</a></li>
+    <li><button class="nav-btn active" onclick="goPage('home')" data-page="home">Home</button></li>
+    <li><button class="nav-btn" onclick="goPage('about')" data-page="about">About</button></li>
+    <li><button class="nav-btn" onclick="goPage('experience')" data-page="experience">Experience</button></li>
+    <li><button class="nav-btn" onclick="goPage('skills')" data-page="skills">Skills</button></li>
+    <li><button class="nav-btn" onclick="goPage('projects')" data-page="projects">Projects</button></li>
   </ul>
+  <button class="nav-hamburger" id="nav-ham" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-kanji">&#x6B7B;&nbsp;&#xB7;&nbsp;&#x8D64;&nbsp;&#xB7;&nbsp;&#x7D2B;</div>
 </nav>
 
-<!-- RAVEN -->
-<div class="raven-container">
-  <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Raven body -->
-    <path d="M60 100 C40 95 20 85 15 70 C10 55 25 45 35 50 C30 40 20 30 30 20 C38 12 50 18 55 28 C58 22 65 15 75 20 C85 25 82 38 78 46 C88 40 100 45 98 58 C96 70 82 78 75 82 C80 88 82 98 75 105 C68 112 60 108 60 100Z" fill="#1a1a1a" stroke="#333" stroke-width="0.5"/>
-    <!-- Wing spread left -->
-    <path d="M35 50 C25 42 10 38 5 30 C2 24 8 18 15 22 C10 16 12 8 20 10 C26 12 28 20 30 26 C28 20 30 12 38 14 C44 16 44 26 42 32 C46 26 50 20 56 24 C60 28 56 36 52 40 C48 35 44 42 38 46Z" fill="#222" stroke="#2a2a2a" stroke-width="0.5"/>
-    <!-- Wing spread right -->
-    <path d="M78 46 C88 38 103 34 108 26 C111 20 105 14 98 18 C103 12 101 4 93 6 C87 8 85 16 83 22 C85 16 83 8 75 10 C69 12 69 22 71 28 C67 22 63 16 57 20 C53 24 57 32 61 36 C65 31 69 38 75 42Z" fill="#222" stroke="#2a2a2a" stroke-width="0.5"/>
-    <!-- Eye -->
-    <circle cx="56" cy="38" r="3" fill="#c0000a" opacity="0.9"/>
-    <circle cx="57" cy="37" r="1" fill="#ff3333"/>
-    <!-- Beak -->
-    <path d="M52 42 C48 44 44 46 42 50 C46 49 52 47 54 44Z" fill="#333"/>
-    <!-- Tail feathers -->
-    <path d="M55 100 C50 115 42 125 38 135 M60 100 C60 118 58 130 55 140 M65 100 C70 115 72 127 75 138" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
-    <!-- Red glow eye -->
-    <circle cx="56" cy="38" r="6" fill="none" stroke="rgba(192,0,10,0.3)" stroke-width="1">
-      <animate attributeName="r" values="4;7;4" dur="3s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
-    </circle>
-  </svg>
+<!-- MOBILE NAV -->
+<div class="nav-mobile-menu" id="mobile-nav">
+  <button class="nav-mobile-btn" onclick="goPage('home');closeMobileNav()">Home</button>
+  <button class="nav-mobile-btn" onclick="goPage('about');closeMobileNav()">About</button>
+  <button class="nav-mobile-btn" onclick="goPage('experience');closeMobileNav()">Experience</button>
+  <button class="nav-mobile-btn" onclick="goPage('skills');closeMobileNav()">Skills</button>
+  <button class="nav-mobile-btn" onclick="goPage('projects');closeMobileNav()">Projects</button>
 </div>
 
-<div class="deathnote-accent">死亡ノート · CYBERSECURITY · 赤チーム</div>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-eyebrow">IAM &amp; Security Operations Analyst</div>
-  <h1 class="hero-name">
-    Kiarah<br/>
-    <span>Pettaway</span>
-  </h1>
-  <div class="hero-rule"></div>
-  <p class="hero-subtitle">
-    IAM &amp; Security Operations · Federal Reserve infrastructure · FedRAMP · ISO 27001<br/>
-    I monitor, respond, and study how to break the things I defend.
-  </p>
-  <div class="hero-decree">
-    Whoever's name is written in this notebook shall be detected.
-  </div>
-  <div class="hero-tags">
-    <span class="hero-tag marked">SIEM</span>
-    <span class="hero-tag marked">Red Teaming</span>
-    <span class="hero-tag">Purple Team</span>
-    <span class="hero-tag">Threat Detection</span>
-    <span class="hero-tag">Offensive Security</span>
-    <span class="hero-tag">Digital Forensics</span>
-    <span class="hero-tag">Microsoft Sentinel</span>
-    <span class="hero-tag">MITRE ATT&CK</span>
-  </div>
-  <div class="scroll-prompt">
-    <span>Scroll</span>
-    <div class="scroll-arrow"></div>
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+    <div class="home-eyebrow">Cybersecurity &amp; Information Assurance</div>
+    <h1 class="home-name">
+      <span class="home-name-first" id="home-first">Kiarah<span class="type-cur"></span></span>
+      <span class="home-name-last">Pettaway</span>
+    </h1>
+    <div class="home-rule"></div>
+    <div class="home-subtitle">IAM &amp; Security Operations &nbsp;&#xB7;&nbsp; Federal Reserve &nbsp;&#xB7;&nbsp; FedRAMP &nbsp;&#xB7;&nbsp; ISO 27001</div>
+    <div class="home-decree">Whoever's name is written in this notebook shall be detected.</div>
+    <div class="home-tags">
+      <span class="home-tag lit">SIEM</span>
+      <span class="home-tag lit">Red Teaming</span>
+      <span class="home-tag">Purple Team</span>
+      <span class="home-tag">Microsoft Sentinel</span>
+      <span class="home-tag">IAM</span>
+      <span class="home-tag">Digital Forensics</span>
+      <span class="home-tag">MITRE ATT&amp;CK</span>
+      <span class="home-tag">FedRAMP</span>
+    </div>
+    <div class="currently-strip">
+  <div class="currently-label">// currently</div>
+  <div class="currently-item"><div class="currently-dot dot-live"></div>Building: IAM Access Review Automation (Python + Microsoft Graph API)</div>
+  <div class="currently-item"><div class="currently-dot dot-live"></div>Pi Honeypot: LIVE — logging real connection attempts</div>
+  <div class="currently-item"><div class="currently-dot dot-active"></div>Studying: PenTest+ — CompTIA</div>
+  <div class="currently-item"><div class="currently-dot dot-plan"></div>Planned: M.S. Cybersecurity @ WGU</div>
+</div>
+<div class="nav-cards">
+      <div class="nav-card" onclick="goPage('about')"><span class="nc-kanji">&#x81EA;</span>About Me</div>
+      <div class="nav-card" onclick="goPage('experience')"><span class="nc-kanji">&#x7D4C;</span>Experience</div>
+      <div class="nav-card" onclick="goPage('skills')"><span class="nc-kanji">&#x6280;</span>Skills</div>
+      <div class="nav-card" onclick="goPage('projects')"><span class="nc-kanji">&#x6848;</span>Projects</div>
+    </div>
+    <div class="scroll-cue"><span>Explore</span><div class="scroll-line"></div></div>
   </div>
 </div>
 
-<div class="blood-divider"></div>
-
-<!-- PROJECTS -->
-<section id="projects">
-<div class="section-wrap">
-  <div class="sec-header reveal">
-    <div class="sec-kanji">案</div>
-    <div class="sec-title-block">
-      <div class="sec-label">// work</div>
-      <div class="sec-title">Projects</div>
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="sec-page">
+    <div class="sec-header reveal">
+      <div class="sec-kanji">&#x81EA;</div>
+      <div><div class="sec-label">// about</div><div class="sec-title">About Me</div></div>
     </div>
-  </div>
+    <div class="about-grid">
+      <div class="about-text">
 
-  <div class="projects-grid">
+        <p class="reveal">I'm <strong>Kiarah Pettaway</strong> — Kay. I work in security operations and identity governance. Day to day, that means triaging incidents, managing access at enterprise scale, monitoring infrastructure in real time, and making sure the right people have the right access — and the wrong people don't.</p>
 
-    <div class="project-card reveal">
-      <div class="card-top">
-        <div class="card-icon">🛡️</div>
-        <span class="badge badge-done">Complete</span>
-      </div>
-      <div class="card-title">Security Monitoring & Detection Program</div>
-      <div class="card-context">WGU IT Capstone C769 · Ablique Game Studios</div>
-      <div class="card-desc">Designed and deployed a centralized SIEM for a simulated 18-person game development studio using Microsoft Sentinel. Configured end-to-end log ingestion, authored detection rules targeting brute-force, privilege escalation, and abnormal auth patterns, then validated through controlled attack simulations. Alerts fired consistently. False positives: minimal.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Microsoft Sentinel</span><span class="chip chip-r">Azure</span><span class="chip chip-r">KQL</span>
-        <span class="chip chip-g">MITRE ATT&CK</span><span class="chip chip-g">NIST 800-137</span>
-      </div>
-      <div class="card-links">
-        <a href="capstone-proposal.md" class="card-link">📄 Proposal</a>
-        <a href="capstone-report.md" class="card-link">📋 Report</a>
-        <a href="https://github.com/l8zydaz/wgu-projects" target="_blank" class="card-link">↗ GitHub</a>
-      </div>
-    </div>
+        <p class="reveal">I've operated in environments most people only read about. I've authenticated into <span class="red">Federal Reserve infrastructure</span> to process ACH transactions. I've run live SIEM dashboards overnight monitoring 300+ financial institutions while the rest of the world slept. I've led IAM and access control reviews under ISO 27001 and FedRAMP frameworks. I've built Python automation that replaced hours of manual work. Right now I'm triaging <strong>30+ incidents daily</strong> with a <strong>96% SLA resolution rate</strong> across identity platforms, mainframes, POS systems, and military access environments.</p>
 
-    <div class="project-card reveal">
-      <div class="card-top"><div class="card-icon">🔬</div><span class="badge badge-done">Complete</span></div>
-      <div class="card-title">Digital Forensics Investigation</div>
-      <div class="card-context">WGU D431 Digital Forensics</div>
-      <div class="card-desc">Conducted mock cybercrime investigations using Autopsy and FTK Imager — evidence acquisition, file system analysis, data recovery from compromised machines. Produced formal forensic reports with documented chain of custody, findings, and conclusions mirroring real-world analyst standards.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Autopsy</span><span class="chip chip-r">FTK Imager</span>
-        <span class="chip chip-g">Digital Forensics</span><span class="chip chip-g">Evidence Handling</span>
-      </div>
-      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/digital-forensics-d431" target="_blank" class="card-link">↗ GitHub</a></div>
-    </div>
+        <p class="reveal">I hold CompTIA <strong>CySA+, SSCP, Security+, Network+, A+</strong>, and <strong>ITIL</strong> — and I earned a <span class="red">WGU Systems Thinking Award</span> in 2024 for applied systems modeling. I finished my B.S. in Cybersecurity &amp; Information Assurance at WGU in 2026.</p>
 
-    <div class="project-card reveal">
-      <div class="card-top"><div class="card-icon">📡</div><span class="badge badge-done">Complete</span></div>
-      <div class="card-title">Network Assessment & Security Awareness</div>
-      <div class="card-context">WGU C844 Emerging Technologies</div>
-      <div class="card-desc">Full network vulnerability and performance assessment using Nmap and Wireshark, followed by a security awareness training program covering AI-driven attacks, social engineering, and emerging adversary techniques. Technical assessment meets human-layer defense.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Nmap</span><span class="chip chip-r">Wireshark</span>
-        <span class="chip chip-g">Vulnerability Assessment</span><span class="chip chip-g">Security Awareness</span>
-      </div>
-      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/emerging-tech-c844" target="_blank" class="card-link">↗ GitHub</a></div>
-    </div>
+        <div class="scroll-quote reveal">"I know what the attack looks like in logs. Now I'm learning to be the one making them."</div>
 
-    <div class="project-card reveal">
-      <div class="card-top"><div class="card-icon">⚖️</div><span class="badge badge-done">Complete</span></div>
-      <div class="card-title">Legal Analysis & Ethical Framework</div>
-      <div class="card-context">WGU C841 Legal Issues in InfoSec</div>
-      <div class="card-desc">Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA requirements. Developed a complete ethical guidance framework and SATE training plan — translating complex regulatory obligations into actionable organizational policy.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Compliance Analysis</span>
-        <span class="chip chip-g">HIPAA</span><span class="chip chip-g">SOX</span><span class="chip chip-g">ECPA</span>
-      </div>
-      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/legal-issues-infosec-c841" target="_blank" class="card-link">↗ GitHub</a></div>
-    </div>
+        <p class="reveal">Here's where I'm headed. I'm building toward offensive security — not to leave defense behind, but to make my defense sharper. PenTest+ is next on the cert track. A Raspberry Pi honeypot is live on my network collecting real attacker behavior right now. I'm writing IAM automation tooling in Python. I'm building IR playbooks from scratch. I'm planning my M.S. in Cybersecurity. I want to attend security conferences, contribute to the community, and keep stacking real skills — not just credentials.</p>
 
-    <div class="project-card reveal">
-      <div class="card-top"><div class="card-icon">🏆</div><span class="badge badge-award">Award Winner</span></div>
-      <div class="card-title">Systems Analysis — WGU Award Recipient</div>
-      <div class="card-context">WGU D372 Systems Thinking · 2024</div>
-      <div class="card-desc">Applied systems thinking frameworks to three complex scenarios using Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes. Task 1 awarded WGU's Systems Thinking Award for excellence in applied systems modeling and analysis.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Systems Modeling</span>
-        <span class="chip chip-g">Causal Loop Diagrams</span><span class="chip chip-g">Root Cause Analysis</span>
-      </div>
-      <div class="card-links">
-        <a href="https://github.com/l8zydaz/wgu-projects/tree/main/systems-thinking-d372" target="_blank" class="card-link">↗ GitHub</a>
-        <a href="https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/award.pdf" target="_blank" class="card-link">🏆 Award</a>
-      </div>
-    </div>
+        <p class="reveal">The goal is simple: be the person who can defend a network, think like the one trying to break in, and build the detections that catch them both. <span class="red">That's the purple team loop</span> — and I'm building it deliberately.</p>
 
-    <div class="project-card reveal">
-      <div class="card-top"><div class="card-icon">🖥️</div><span class="badge badge-wip">In Progress</span></div>
-      <div class="card-title">Home SOC & Penetration Testing Lab</div>
-      <div class="card-context">Personal Project</div>
-      <div class="card-desc">Building a home lab with Active Directory simulation, vulnerable machine environments, and attack chains using Kali Linux. Security Onion and Elastic SIEM on the blue team side. TryHackMe and CTF writeups to be published. This is where theory becomes practice.</div>
-      <div class="card-stack">
-        <span class="chip chip-r">Kali Linux</span><span class="chip chip-r">Active Directory</span><span class="chip chip-r">Security Onion</span>
-        <span class="chip chip-g">Elastic SIEM</span><span class="chip chip-g">CTF</span>
-      </div>
-      <div class="card-links"><a href="https://github.com/l8zydaz" target="_blank" class="card-link">↗ Coming Soon</a></div>
-    </div>
+        <div class="purple-banner reveal">
+          <div class="purple-label">&#x2694; Purple Team Mindset</div>
+          <div class="purple-text"><strong>Red informs blue. Blue sharpens red.</strong> Every exploit I study becomes a detection rule. Every detection rule reveals a new evasion path to study. I spent real time in live SIEM dashboards during peak attack windows. Now I'm studying the other side of that equation — and bringing everything back to defense.</div>
+        </div>
 
-  </div>
-</div>
-</section>
-
-<div class="blood-divider"></div>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-<div class="section-wrap">
-  <div class="sec-header reveal">
-    <div class="sec-kanji">経</div>
-    <div class="sec-title-block">
-      <div class="sec-label">// experience</div>
-      <div class="sec-title">Work History</div>
-    </div>
-  </div>
-
-  <div class="exp-item reveal">
-    <div class="exp-spine"></div>
-    <div>
-      <div class="exp-role">IT Operations & Security Analyst</div>
-      <div class="exp-company">SpartanNash · Byron Center, MI</div>
-      <div class="exp-date">October 2025 — Present</div>
-      <ul class="exp-list">
-        <li>Resolved complex technical issues across a diverse enterprise environment spanning identity platforms, mainframe systems, point-of-sale infrastructure, and military access systems — exercising independent judgment to troubleshoot or escalate appropriately</li>
-        <li>Supported thousands of users across corporate, retail, warehouse, and military environments — authenticating users and managing access across multiple business segments with varying security and compliance requirements</li>
-        <li>Performed high-volume access management operations: password recovery, account unlocks, MFA enrollment and reregistration, BitLocker recovery, and temporary and persistent permission grants across enterprise identity platforms</li>
-        <li>Served as primary point of contact for authentication and access restoration — handling credential resets and identity verification for routine requests and InfoSec-escalated account compromise events requiring secure access remediation</li>
-        <li>Triaged and managed 30+ incidents daily within Cherwell ITSM — documenting investigative steps, prioritizing service-impacting events, maintaining a personal <strong>96% SLA resolution rate</strong> across a geographically dispersed enterprise</li>
-        <li>Investigated endpoint devices for malfunctions, abnormal behavior, and connectivity issues across Windows, macOS, and Linux — resolving independently or escalating to infrastructure teams</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="exp-item reveal">
-    <div class="exp-spine"></div>
-    <div>
-      <div class="exp-role">Security Engineer (Internship)</div>
-      <div class="exp-company">Bindplane · Grand Rapids, MI</div>
-      <div class="exp-date">May 2025 — August 2025</div>
-      <ul class="exp-list">
-        <li>Spearheaded consolidation of 500+ cross-functional artifacts into a centralized GitHub/GitBook documentation-as-code system, strengthening control traceability and audit readiness for ISO 27001 and FedRAMP initiatives</li>
-        <li>Conducted IAM and access control reviews across SaaS platforms — identifying over-permissioned roles and recommending least-privilege adjustments to reduce unauthorized access risk</li>
-        <li>Conducted a vendor security review of Google IPA on behalf of company leadership prior to contract renewal — evaluating platform security posture and delivering findings that informed the procurement decision</li>
-        <li>Partnered with the engineering team and CEO to update integration configurations, data destinations, and log sources within Grafana Labs — improving telemetry pipeline accuracy and monitoring coverage across production</li>
-        <li>Developed and deployed a Python-based automation script to dynamically generate YAML configuration structures — eliminating repetitive manual formatting and improving consistency across 100+ structured documentation files</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="exp-item reveal">
-    <div class="exp-spine"></div>
-    <div>
-      <div class="exp-role">Data Center Operations Specialist</div>
-      <div class="exp-company">CU*Answers · Kentwood, MI</div>
-      <div class="exp-date">April 2024 — January 2025</div>
-      <ul class="exp-list">
-        <li>Monitored 24/7 IBM iSeries (AS400) production and development environments supporting 300+ financial institutions — investigating job failures, abnormal terminations, and system integrity alerts through QSYSOPR, ROBOT, and CU*BASE</li>
-        <li>Operated a live SIEM dashboard throughout the night shift — monitoring subsystem health, user logon activity, and job failure events in real time during peak attack windows, creating and escalating incidents based on observed anomalies</li>
-        <li>Authenticated into Federal Reserve infrastructure via Fedline Advantage using FED token and multi-factor passphrase — pulling and uploading ACH files into production in compliance with federal financial processing requirements</li>
-        <li>Processed and transmitted credit card payment files to PSCU, FIS BASE2000, TMG, and Certegy via PGP-encrypted FTP/SFTP — verifying balance and status reports and confirming successful ingestion across all vendor integrations daily</li>
-        <li>Responded to message center errors by analyzing job logs and collaborating with programmers on code-level issues — restoring production stability within SLA requirements across 300+ institutions handling <strong>$50M+ in daily transactions</strong></li>
-      </ul>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<div class="blood-divider"></div>
-
-<!-- SKILLS -->
-<section id="skills">
-<div class="section-wrap">
-  <div class="sec-header reveal">
-    <div class="sec-kanji">技</div>
-    <div class="sec-title-block">
-      <div class="sec-label">// capabilities</div>
-      <div class="sec-title">Skills & Certifications</div>
-    </div>
-  </div>
-
-  <div class="certs-row reveal">
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">CySA+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">SSCP</div><div class="cert-issuer">Associate of (ISC²) · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">Security+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">Network+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">A+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">ITIL</div><div class="cert-issuer">Axelos · Earned</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">🔴</div><div><div class="cert-name">PenTest+</div><div class="cert-issuer">CompTIA · Pending</div></div></div>
-    <div class="cert-tile"><div class="cert-mark">🎓</div><div><div class="cert-name">B.S. Cybersecurity & IA</div><div class="cert-issuer">WGU · 2026</div></div></div>
-  </div>
-
-  <div class="skills-grid reveal">
-    <div class="skill-card" data-kanji="監">
-      <h3>Security Operations</h3>
-      <div class="skill-items">
-        <span class="skill-pill">Suspicious Activity Response</span><span class="skill-pill">Incident Response (NIST 800-61)</span>
-        <span class="skill-pill">Alert Monitoring & Triage</span><span class="skill-pill">Compromised Account Triage</span>
-        <span class="skill-pill">Endpoint Investigation</span><span class="skill-pill">Phishing & Social Eng. Response</span>
-        <span class="skill-pill">Auth & Access Anomaly Investigation</span>
-      </div>
-    </div>
-    <div class="skill-card" data-kanji="鍵">
-      <h3>Identity & Access Management</h3>
-      <div class="skill-items">
-        <span class="skill-pill">Active Directory</span><span class="skill-pill">Azure Entra ID</span>
-        <span class="skill-pill">MFA Enrollment & Reregistration</span><span class="skill-pill">BitLocker Recovery</span>
-        <span class="skill-pill">Least Privilege Review</span><span class="skill-pill">SailPoint</span>
-        <span class="skill-pill">Permission Management</span><span class="skill-pill">Account Unlock & Lockout</span>
-      </div>
-    </div>
-    <div class="skill-card" data-kanji="具">
-      <h3>SIEM & Monitoring</h3>
-      <div class="skill-items">
-        <span class="skill-pill">Microsoft Sentinel</span><span class="skill-pill">IBM iSeries (AS400)</span>
-        <span class="skill-pill">QSYSOPR</span><span class="skill-pill">ROBOT Scheduler</span>
-        <span class="skill-pill">Smart Operator</span><span class="skill-pill">Windows Event Logs</span>
-        <span class="skill-pill">Real-Time Session Monitoring</span>
-      </div>
-    </div>
-    <div class="skill-card" data-kanji="銀">
-      <h3>Enterprise & Financial Systems</h3>
-      <div class="skill-items">
-        <span class="skill-pill">CU*BASE</span><span class="skill-pill">Fedline Advantage (Federal Reserve)</span>
-        <span class="skill-pill">Cherwell ITSM</span><span class="skill-pill">Citrix</span>
-        <span class="skill-pill">DSS (Military Access)</span><span class="skill-pill">GoAnywhere (PGP/FTP/SFTP)</span>
-        <span class="skill-pill">ACH Processing</span><span class="skill-pill">FIS BASE2000 / PSCU / TMG</span>
-      </div>
-    </div>
-    <div class="skill-card" data-kanji="術">
-      <h3>Scripting & Tools</h3>
-      <div class="skill-items">
-        <span class="skill-pill">Python</span><span class="skill-pill">Bash</span>
-        <span class="skill-pill">SQL</span><span class="skill-pill">YAML</span>
-        <span class="skill-pill">Git / GitHub</span><span class="skill-pill">Nmap / Zenmap</span>
-        <span class="skill-pill">Wireshark</span><span class="skill-pill">Autopsy</span>
-      </div>
-    </div>
-    <div class="skill-card" data-kanji="法">
-      <h3>Frameworks & Governance</h3>
-      <div class="skill-items">
-        <span class="skill-pill">MITRE ATT&CK</span><span class="skill-pill">NIST 800-61</span>
-        <span class="skill-pill">NIST 800-30/37/53</span><span class="skill-pill">NIST CSF</span>
-        <span class="skill-pill">ISO 27001</span><span class="skill-pill">FedRAMP</span>
-        <span class="skill-pill">FFIEC</span><span class="skill-pill">NCUA</span><span class="skill-pill">SOC 2</span><span class="skill-pill">ITIL</span>
-      </div>
-    </div>
-  </div>
-</div>
-</section>
-
-<div class="blood-divider"></div>
-
-<!-- ABOUT -->
-<section id="about">
-<div class="section-wrap">
-  <div class="sec-header reveal">
-    <div class="sec-kanji">自</div>
-    <div class="sec-title-block">
-      <div class="sec-label">// about</div>
-      <div class="sec-title">About Me</div>
-    </div>
-  </div>
-  <div class="about-layout">
-    <div class="about-text reveal">
-
-      <div class="purple-banner">
-        <div class="purple-banner-label">⚔ Purple Team Mindset</div>
-        <div class="purple-banner-text">
-          <strong>Red informs blue. Blue sharpens red.</strong> My path into offensive security isn't about breaking things — it's about understanding how attacks work so the defenses I build actually hold. I've spent real time in live SIEM dashboards during peak attack windows, watching authentication anomalies and job failures in real time. Now I'm studying the other side of that equation. PenTest+ isn't just a certification — it's the formal foundation of a purple team philosophy I've been building since the first time I wrote a Sentinel detection rule and asked: <em>"how would I have evaded this?"</em>
+        <div class="affiliations reveal">
+          <h4>// Community</h4>
+          <div class="affil-item">WGU Cyber Club — Active Member</div>
+          <div class="affil-item">Women in CyberSecurity (WiCyS) — Member &amp; Community Moderator</div>
+          <div class="affil-item">Women in Technology (WIT) — Member</div>
         </div>
       </div>
-
-      <p>I'm <strong>Kiarah Pettaway</strong> — Kay. IAM and security operations professional with hands-on experience across enterprise identity governance, front-line incident response, and regulated financial environments including <span class="red">Federal Reserve infrastructure</span>, FFIEC, NCUA, FedRAMP, and ISO 27001. I hold CompTIA CySA+, SSCP, and Security+ — and I'm working toward PenTest+.</p>
-
-      <div class="scroll-quote">
-        "I know exactly how the attack works. That's why the detection rule caught it."
+      <div class="reveal">
+        <div class="contact-card">
+          <h3>Get in Touch</h3>
+          <div class="c-rule"></div>
+          <div class="c-row"><div class="c-label">Current Role</div><div class="c-val">IT Operations &amp; Security Analyst<br/>SpartanNash &nbsp;&#xB7;&nbsp; Byron Center, MI</div></div>
+          <div class="c-row"><div class="c-label">Education</div><div class="c-val">B.S. Cybersecurity &amp; IA — WGU<br/><span style="color:var(--red)">M.S. Cybersecurity — Planned</span></div></div>
+          <div class="c-row"><div class="c-label">Focus</div><div class="c-val">IAM &nbsp;&#xB7;&nbsp; SecOps &nbsp;&#xB7;&nbsp; Red Team &nbsp;&#xB7;&nbsp; Purple Team</div></div>
+          <div class="c-rule"></div>
+          <div class="c-row"><div class="c-label">GitHub</div><div class="c-val"><a href="https://github.com/l8zydaz" target="_blank">github.com/l8zydaz</a></div></div>
+          <div class="c-row"><div class="c-label">LinkedIn</div><div class="c-val"><a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank">linkedin.com/in/kiarah-pettaway</a></div></div>
+          <div class="c-row"><div class="c-label">Email</div><div class="c-val"><a href="mailto:kiarahp@protonmail.com">kiarahp@protonmail.com</a></div></div>
+          <div class="c-rule"></div>
+          <a href="mailto:kiarahp@protonmail.com" class="btn-contact">Write in the notebook &#x2192;</a>
+        </div>
       </div>
-
-      <p>My day job at SpartanNash has me triaging 30+ incidents daily with a 96% SLA resolution rate — spanning identity platforms, mainframe systems, POS infrastructure, and military access systems. Before that: a Security Engineer internship at Bindplane where I led ISO 27001 and FedRAMP documentation consolidation and deployed Python automation across 100+ config files. Before that: running live SIEM dashboards overnight at CU*Answers, processing Federal Reserve ACH transactions, and keeping $50M+ in daily financial operations stable.</p>
-
-      <p>I also received WGU's <span class="red">Systems Thinking Award</span> in 2024 — because seeing how systems fail is a security skill, not just a business one.</p>
-
-      <p><strong>Community:</strong> Active member of WGU Cyber Club, Women in CyberSecurity (WiCyS) Community Moderator, and Women in Technology (WIT). <strong>The mission:</strong> PenTest+. M.S. Cybersecurity (planned). Conferences. CTFs. A home lab running 24/7. I want to defend networks and think like the one trying to break in — then build the detections that catch them both.</p>
-    </div>
-
-    <div class="contact-scroll reveal">
-      <h3>Get in Touch</h3>
-      <div class="c-divider"></div>
-      <div class="c-row">
-        <div class="c-label">Current Role</div>
-        <div class="c-val">IT Operations & Security Analyst<br/>SpartanNash · Byron Center, MI</div>
-      </div>
-      <div class="c-row">
-        <div class="c-label">Education</div>
-        <div class="c-val">B.S. Cybersecurity & IA — WGU<br/><span style="color:var(--red)">M.S. Cybersecurity — Planned</span></div>
-      </div>
-      <div class="c-row">
-        <div class="c-label">Focus</div>
-        <div class="c-val">IAM · SecOps · Red Team · Purple Team</div>
-      </div>
-      <div class="c-row">
-        <div class="c-label">GitHub</div>
-        <div class="c-val"><a href="https://github.com/l8zydaz" target="_blank">github.com/l8zydaz</a></div>
-      </div>
-      <div class="c-row">
-        <div class="c-label">LinkedIn</div>
-        <div class="c-val"><a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank">linkedin.com/in/kiarah-pettaway</a></div>
-      </div>
-      <div class="c-row">
-        <div class="c-label">Email</div>
-        <div class="c-val"><a href="mailto:kiarahp@protonmail.com">kiarahp@protonmail.com</a></div>
-      </div>
-      <div class="c-divider"></div>
-      <a href="mailto:kiarahp@protonmail.com" class="btn-scroll">Write in the notebook →</a>
     </div>
   </div>
 </div>
-</section>
 
-<footer>
-  <div class="footer-sigil">© 2026 Kiarah T. Pettaway · <span>All names detected</span></div>
-  <div class="footer-sigil">死 · 赤 · 紫</div>
-</footer>
+<!-- EXPERIENCE PAGE -->
+<div class="page" id="page-experience">
+  <div class="sec-page">
+    <div class="sec-header reveal">
+      <div class="sec-kanji">&#x7D4C;</div>
+      <div><div class="sec-label">// work history</div><div class="sec-title">Experience</div></div>
+    </div>
+    <div class="case-file-label">CASE FILE &nbsp;&#xB7;&nbsp; <span>VERIFIED EMPLOYMENT RECORD</span> &nbsp;&#xB7;&nbsp; 3 ENTRIES</div>
+
+    <div class="exp-item reveal">
+      <div class="exp-spine"></div>
+      <div>
+        <div class="exp-role">IT Operations &amp; Security Analyst</div>
+        <div class="exp-company">SpartanNash &nbsp;&#xB7;&nbsp; Byron Center, MI</div>
+        <div class="exp-date">October 2025 — Present</div>
+        <ul class="exp-list">
+          <li>Resolved complex technical issues across identity platforms, mainframe systems, POS infrastructure, and military access systems — independent judgment to troubleshoot or escalate</li>
+          <li>Supported thousands of users across corporate, retail, warehouse, and military environments — authenticating and managing access across segments with varying compliance requirements</li>
+          <li>Performed high-volume access management: password recovery, account unlocks, MFA enrollment, BitLocker recovery, and permission grants across enterprise identity platforms</li>
+          <li>Served as primary point of contact for authentication and access restoration — InfoSec-escalated account compromise events requiring secure remediation</li>
+          <li>Triaged and managed 30+ incidents daily within Cherwell ITSM — maintaining a personal <strong>96% SLA resolution rate</strong> across a geographically dispersed enterprise</li>
+          <li>Investigated endpoint devices for malfunctions and abnormal behavior across Windows, macOS, and Linux</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-spine"></div>
+      <div>
+        <div class="exp-role">Security Engineer (Internship)</div>
+        <div class="exp-company">Bindplane &nbsp;&#xB7;&nbsp; Grand Rapids, MI</div>
+        <div class="exp-date">May 2025 — August 2025</div>
+        <ul class="exp-list">
+          <li>Spearheaded consolidation of 500+ cross-functional artifacts into a centralized GitHub/GitBook documentation-as-code system, strengthening audit readiness for ISO 27001 and FedRAMP</li>
+          <li>Conducted IAM and access control reviews across SaaS platforms — identifying over-permissioned roles and recommending least-privilege adjustments</li>
+          <li>Conducted a vendor security review of Google IPA on behalf of company leadership — findings directly informed the procurement decision</li>
+          <li>Partnered with engineering team and CEO to update integration configurations in Grafana Labs — improving telemetry pipeline accuracy across production</li>
+          <li>Developed and deployed a Python automation script to generate YAML configuration structures — eliminating manual formatting across 100+ structured documentation files</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-spine"></div>
+      <div>
+        <div class="exp-role">Data Center Operations Specialist</div>
+        <div class="exp-company">CU*Answers &nbsp;&#xB7;&nbsp; Kentwood, MI</div>
+        <div class="exp-date">April 2024 — January 2025</div>
+        <ul class="exp-list">
+          <li>Monitored 24/7 IBM iSeries (AS400) environments supporting 300+ financial institutions — investigating job failures and system integrity alerts through QSYSOPR, ROBOT, and CU*BASE</li>
+          <li>Operated a live SIEM dashboard throughout the night shift — monitoring subsystem health and logon activity during peak attack windows, escalating anomalies</li>
+          <li>Authenticated into Federal Reserve infrastructure via Fedline Advantage — ACH file processing in compliance with federal financial requirements</li>
+          <li>Processed PGP-encrypted FTP/SFTP transmissions to PSCU, FIS BASE2000, TMG, and Certegy daily</li>
+          <li>Restored production stability within SLA across 300+ institutions handling <strong>$50M+ in daily transactions</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS PAGE -->
+<div class="page" id="page-skills">
+  <div class="sec-page">
+    <div class="sec-header reveal">
+      <div class="sec-kanji">&#x6280;</div>
+      <div><div class="sec-label">// capabilities</div><div class="sec-title">Skills &amp; Certifications</div></div>
+    </div>
+
+    <div class="certs-grid reveal">
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">CySA+</div><div class="cert-issuer">CompTIA &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">SSCP</div><div class="cert-issuer">Associate of (ISC)&#xB2; &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">Security+</div><div class="cert-issuer">CompTIA &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">Network+</div><div class="cert-issuer">CompTIA &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">A+</div><div class="cert-issuer">CompTIA &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x2705;</div><div><div class="cert-name">ITIL</div><div class="cert-issuer">Axelos &nbsp;&#xB7;&nbsp; Earned</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x1F534;</div><div><div class="cert-name">PenTest+</div><div class="cert-issuer">CompTIA &nbsp;&#xB7;&nbsp; Pending</div></div></div>
+      <div class="cert-tile"><div class="cert-mark">&#x1F393;</div><div><div class="cert-name">B.S. Cybersecurity &amp; IA</div><div class="cert-issuer">WGU &nbsp;&#xB7;&nbsp; 2026</div></div></div>
+    </div>
+
+    <div class="skills-grid reveal">
+      <div class="skill-card" data-kanji="&#x76E3;"><h3>Security Operations</h3><div class="skill-items"><span class="skill-pill">Suspicious Activity Response</span><span class="skill-pill">Incident Response (NIST 800-61)</span><span class="skill-pill">Alert Monitoring &amp; Triage</span><span class="skill-pill">Compromised Account Triage</span><span class="skill-pill">Endpoint Investigation</span><span class="skill-pill">Auth &amp; Access Anomaly Investigation</span></div></div>
+      <div class="skill-card" data-kanji="&#x9375;"><h3>Identity &amp; Access Management</h3><div class="skill-items"><span class="skill-pill">Active Directory</span><span class="skill-pill">Azure Entra ID</span><span class="skill-pill">MFA Enrollment &amp; Reregistration</span><span class="skill-pill">BitLocker Recovery</span><span class="skill-pill">Least Privilege Review</span><span class="skill-pill">SailPoint</span><span class="skill-pill">Permission Management</span></div></div>
+      <div class="skill-card" data-kanji="&#x5177;"><h3>SIEM &amp; Monitoring</h3><div class="skill-items"><span class="skill-pill">Microsoft Sentinel</span><span class="skill-pill">IBM iSeries (AS400)</span><span class="skill-pill">QSYSOPR</span><span class="skill-pill">ROBOT Scheduler</span><span class="skill-pill">Smart Operator</span><span class="skill-pill">Windows Event Logs</span><span class="skill-pill">Real-Time Session Monitoring</span></div></div>
+      <div class="skill-card" data-kanji="&#x9280;"><h3>Enterprise &amp; Financial Systems</h3><div class="skill-items"><span class="skill-pill">CU*BASE</span><span class="skill-pill">Fedline Advantage (Federal Reserve)</span><span class="skill-pill">Cherwell ITSM</span><span class="skill-pill">Citrix</span><span class="skill-pill">GoAnywhere (PGP/FTP/SFTP)</span><span class="skill-pill">ACH Processing</span><span class="skill-pill">DSS (Military Access)</span></div></div>
+      <div class="skill-card" data-kanji="&#x8853;"><h3>Scripting &amp; Tools</h3><div class="skill-items"><span class="skill-pill">Python</span><span class="skill-pill">Bash</span><span class="skill-pill">SQL</span><span class="skill-pill">YAML</span><span class="skill-pill">Git / GitHub</span><span class="skill-pill">Nmap / Zenmap</span><span class="skill-pill">Wireshark</span><span class="skill-pill">Autopsy</span></div></div>
+      <div class="skill-card" data-kanji="&#x6CD5;"><h3>Frameworks &amp; Governance</h3><div class="skill-items"><span class="skill-pill">MITRE ATT&amp;CK</span><span class="skill-pill">NIST 800-61</span><span class="skill-pill">NIST 800-30/37/53</span><span class="skill-pill">ISO 27001</span><span class="skill-pill">FedRAMP</span><span class="skill-pill">FFIEC / NCUA</span><span class="skill-pill">SOC 2</span><span class="skill-pill">ITIL</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS PAGE -->
+<div class="page" id="page-projects">
+  <div class="sec-page">
+    <div class="sec-header reveal">
+      <div class="sec-kanji">&#x6848;</div>
+      <div><div class="sec-label">// work</div><div class="sec-title">Projects</div></div>
+    </div>
+    <div class="projects-grid-wrap">
+      <div class="proj-group-label">Personal &amp; Applied Projects</div>
+      <div class="projects-grid projects-grid-primary">
+
+      <div class="project-card reveal" onclick="openModal(0)">
+        <div class="card-top"><div class="card-icon">&#x1F6E1;&#xFE0F;</div><span class="badge badge-done">Complete</span></div>
+        <div class="card-title">Security Monitoring &amp; Detection Program</div>
+        <div class="card-context">WGU IT Capstone C769 &nbsp;&#xB7;&nbsp; Ablique Game Studios</div>
+        <div class="card-desc">Designed and deployed a centralized SIEM for a simulated 18-person game studio using Microsoft Sentinel. End-to-end log ingestion, detection rules for brute-force, privilege escalation, and abnormal auth patterns. Alerts fired consistently. False positives: minimal.</div>
+        <div class="card-stack"><span class="chip chip-r">Microsoft Sentinel</span><span class="chip chip-r">Azure</span><span class="chip chip-r">KQL</span><span class="chip chip-g">MITRE ATT&amp;CK</span><span class="chip chip-g">NIST 800-137</span></div>
+        <div class="card-footer"><span class="card-hint">click to open &#x2192;</span></div>
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(1)">
+        <div class="card-top"><div class="card-icon">&#x1F52C;</div><span class="badge badge-done">Complete</span></div>
+        <div class="card-title">Digital Forensics Investigation</div>
+        <div class="card-context">WGU D431 &nbsp;&#xB7;&nbsp; digital-forensics-d431</div>
+        <div class="card-desc">Mock cybercrime investigations using Autopsy and FTK Imager — evidence acquisition, file system analysis, data recovery from compromised machines. Formal forensic reports with documented chain of custody.</div>
+        <div class="card-stack"><span class="chip chip-r">Autopsy</span><span class="chip chip-r">FTK Imager</span><span class="chip chip-g">Digital Forensics</span><span class="chip chip-g">Evidence Handling</span></div>
+        <div class="card-footer"><span class="card-hint">click to open &#x2192;</span></div>
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(2)">
+        <div class="card-top"><div class="card-icon">&#x1F4E1;</div><span class="badge badge-done">Complete</span></div>
+        <div class="card-title">Network Assessment &amp; Security Awareness</div>
+        <div class="card-context">WGU C844 &nbsp;&#xB7;&nbsp; emerging-tech-c844</div>
+        <div class="card-desc">Full network vulnerability and performance assessment using Nmap and Wireshark, followed by a security awareness training program covering AI-driven attacks, social engineering, and emerging adversary techniques.</div>
+        <div class="card-stack"><span class="chip chip-r">Nmap</span><span class="chip chip-r">Wireshark</span><span class="chip chip-g">Vulnerability Assessment</span><span class="chip chip-g">Security Awareness</span></div>
+        <div class="card-footer"><span class="card-hint">click to open &#x2192;</span></div>
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(3)">
+        <div class="card-top"><div class="card-icon">&#x2696;&#xFE0F;</div><span class="badge badge-done">Complete</span></div>
+        <div class="card-title">Legal Analysis &amp; Ethical Framework</div>
+        <div class="card-context">WGU C841 &nbsp;&#xB7;&nbsp; legal-issues-infosec-c841</div>
+        <div class="card-desc">Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA. Developed a complete ethical guidance framework and SATE training plan translating regulatory obligations into actionable policy.</div>
+        <div class="card-stack"><span class="chip chip-r">Compliance Analysis</span><span class="chip chip-g">HIPAA</span><span class="chip chip-g">SOX</span><span class="chip chip-g">ECPA</span></div>
+        <div class="card-footer"><span class="card-hint">click to open &#x2192;</span></div>
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(4)">
+        <div class="card-top"><div class="card-icon">&#x1F3C6;</div><span class="badge badge-award">Award Winner</span></div>
+        <div class="card-title">Systems Analysis — WGU Award Recipient</div>
+        <div class="card-context">WGU D372 &nbsp;&#xB7;&nbsp; systems-thinking-d372 &nbsp;&#xB7;&nbsp; 2024</div>
+        <div class="card-desc">Applied Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes across three complex organizational scenarios. Task 1 awarded WGU Systems Thinking Award.</div>
+        <div class="card-stack"><span class="chip chip-r">Systems Modeling</span><span class="chip chip-g">Causal Loop Diagrams</span><span class="chip chip-g">Root Cause Analysis</span></div>
+        
+      </div>
+
+      </div>
+      <div class="proj-group-label">In Progress</div>
+      <div class="projects-grid projects-grid-secondary">
+
+      <div class="project-card reveal" onclick="openModal(5)">
+        <div class="card-top"><div class="card-icon">&#x1F510;</div><span class="badge badge-wip">In Progress</span></div>
+        <div class="card-title">IAM Access Review Automation</div>
+        <div class="card-context">Personal Project &nbsp;&#xB7;&nbsp; Python + Microsoft Graph API</div>
+        <div class="card-desc">Python tool connecting to Azure Entra ID via Microsoft Graph API to audit accounts for stale logins, missing MFA, over-permissioned roles, and disabled accounts still holding active licenses. Outputs CSV and dark-themed HTML reports. Direct translation of IAM review work at Bindplane and SpartanNash.</div>
+        <div class="card-stack"><span class="chip chip-r">Python</span><span class="chip chip-r">Microsoft Graph API</span><span class="chip chip-r">Azure Entra ID</span><span class="chip chip-g">NIST 800-53 AC-2</span><span class="chip chip-g">IAM</span></div>
+        
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(6)">
+        <div class="card-top"><div class="card-icon">&#x1F967;</div><span class="badge badge-wip">In Progress</span></div>
+        <div class="card-title">Raspberry Pi 2W — Honeypot &amp; Sensor Node</div>
+        <div class="card-context">Personal Project &nbsp;&#xB7;&nbsp; Raspberry Pi 2W</div>
+        <div class="card-desc">Deploying a low-interaction honeypot on a Raspberry Pi 2W to log real-world connection attempts and attacker reconnaissance behavior. Feeding captured telemetry into a local ELK stack for analysis. Every connection attempt becomes real threat intel mapped to MITRE ATT&amp;CK.</div>
+        <div class="card-stack"><span class="chip chip-r">Raspberry Pi 2W</span><span class="chip chip-r">Honeypot</span><span class="chip chip-r">ELK Stack</span><span class="chip chip-g">MITRE ATT&amp;CK</span><span class="chip chip-g">Threat Intel</span></div>
+        
+      </div>
+
+      <div class="project-card reveal" onclick="openModal(7)">
+        <div class="card-top"><div class="card-icon">&#x1F4CB;</div><span class="badge badge-wip">In Progress</span></div>
+        <div class="card-title">Incident Response Playbook Library</div>
+        <div class="card-context">Personal Project &nbsp;&#xB7;&nbsp; GitHub &nbsp;&#xB7;&nbsp; NIST 800-61</div>
+        <div class="card-desc">A GitHub-hosted library of structured incident response playbooks covering the most common attack scenarios — credential compromise, phishing, account takeover, endpoint anomaly, and unauthorized access. Each playbook includes a decision tree, containment steps, evidence collection checklist, escalation path, and post-incident documentation template. Written against NIST 800-61. Built to be reusable by any security team, not tied to any specific environment.</div>
+        <div class="card-stack"><span class="chip chip-r">NIST 800-61</span><span class="chip chip-r">Incident Response</span><span class="chip chip-g">Cherwell ITSM</span><span class="chip chip-g">Playbooks</span></div>
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-context" id="modalContext"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&#x2715; close</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-stack" id="modalStack"></div>
+      <div class="modal-links">
+        <div class="modal-links-label">// links</div>
+        <div id="modalLinks"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
-// ── FALLING ASH PARTICLES ──
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+// ══════════════════════════════════════════
+// PROJECT DATA
+// ══════════════════════════════════════════
+var projectData=[
+  {title:'Security Monitoring & Detection Program',context:'WGU IT Capstone C769 - Ablique Game Studios',desc:'Designed and deployed a centralized SIEM for a simulated 18-person game studio using Microsoft Sentinel. End-to-end log ingestion, detection rules for brute-force, privilege escalation, and abnormal auth patterns, validated through controlled attack simulations. Alerts fired consistently. False positives: minimal.',chips:['Microsoft Sentinel','Azure','KQL','MITRE ATT&CK','NIST 800-137'],links:[{icon:'&#x2197;',label:'GitHub Repo',url:'https://github.com/l8zydaz/l8zydaz.github.io'},{icon:'&#x1F4C4;',label:'Capstone Proposal',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-proposal.md'},{icon:'&#x1F4CB;',label:'Implementation Report',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-report.md'}]},
+  {title:'Digital Forensics Investigation',context:'WGU D431 - digital-forensics-d431',desc:'Mock cybercrime investigations using Autopsy and FTK Imager. Evidence acquisition, file system analysis, data recovery from compromised machines. Formal forensic reports with documented chain of custody mirroring real-world analyst standards.',chips:['Autopsy','FTK Imager','Digital Forensics','Evidence Handling'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/digital-forensics-d431'},{icon:'&#x1F4C4;',label:'Autopsy Lab Report',url:'https://github.com/l8zydaz/wgu-projects/blob/main/digital-forensics-d431/autopsy-lab-report.md'}]},
+  {title:'Network Assessment & Security Awareness',context:'WGU C844 - emerging-tech-c844',desc:'Full network vulnerability and performance assessment using Nmap and Wireshark, followed by a security awareness training program covering AI-driven attacks, social engineering, and emerging adversary techniques.',chips:['Nmap','Wireshark','Vulnerability Assessment','Security Awareness'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/emerging-tech-c844'},{icon:'&#x1F4C4;',label:'Task 1 - Network Assessment',url:'https://github.com/l8zydaz/wgu-projects/blob/main/emerging-tech-c844/task-1-network-assessment.md'},{icon:'&#x1F4C4;',label:'Task 2 - Training Plan',url:'https://github.com/l8zydaz/wgu-projects/blob/main/emerging-tech-c844/task-2-wlan-mobile-plan.md'}]},
+  {title:'Legal Analysis & Ethical Framework',context:'WGU C841 - legal-issues-infosec-c841',desc:'Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA. Developed a complete ethical guidance framework and SATE training plan translating regulatory obligations into actionable organizational policy.',chips:['Compliance Analysis','HIPAA','SOX','ECPA'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/legal-issues-infosec-c841'},{icon:'&#x1F4C4;',label:'Task 1 - Legal Analysis',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-1-legal-analysis-summary.md'},{icon:'&#x1F4C4;',label:'Task 2 - SATE Plan',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-2-ethical-guidance-and-sate.md'}]},
+  {title:'Systems Analysis - WGU Award Recipient',context:'WGU D372 - systems-thinking-d372 - 2024',desc:'Applied Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes across three complex organizational scenarios. Task 1 awarded WGU Systems Thinking Award for excellence in applied systems modeling.',chips:['Systems Modeling','Causal Loop Diagrams','Root Cause Analysis'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/systems-thinking-d372'},{icon:'&#x1F4C4;',label:'Task 1',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-1-wildes-bramble-analysis.md'},{icon:'&#x1F4C4;',label:'Task 2',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-2-homelessness-case-archetype.md'},{icon:'&#x1F4C4;',label:'Task 3',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-3-shifting-the-burden.md'},{icon:'&#x1F3C6;',label:'Award Certificate',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/award.pdf'}]},
+  {title:'IAM Access Review Automation',context:'Personal Project - Python + Microsoft Graph API',desc:'Python tool connecting to Azure Entra ID via Microsoft Graph API to audit accounts for stale logins, missing MFA enrollment, over-permissioned roles, and disabled accounts still holding active licenses. Outputs CSV and HTML reports. Direct translation of IAM review work at Bindplane and SpartanNash. Maps to NIST 800-53 AC-2 and AC-6.',chips:['Python','Microsoft Graph API','Azure Entra ID','NIST 800-53 AC-2','IAM','Automation'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
+  {title:'Raspberry Pi 2W - Honeypot & Sensor Node',context:'Personal Project - Raspberry Pi 2W',desc:'Deploying a low-interaction honeypot on a Raspberry Pi 2W to log real-world connection attempts and attacker reconnaissance behavior. Feeding captured telemetry into a local ELK stack for analysis. Every connection attempt becomes real threat intel mapped to MITRE ATT&CK.',chips:['Raspberry Pi 2W','Honeypot','ELK Stack','MITRE ATT&CK','Threat Intel','Network Monitoring'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
+  {title:'Incident Response Playbook Library',context:'Personal Project - GitHub - NIST 800-61',desc:'A GitHub-hosted library of structured IR playbooks covering credential compromise, phishing, account takeover, endpoint anomaly, and unauthorized access. Each playbook includes a decision tree, containment steps, evidence collection checklist, escalation path, and post-incident documentation template. Written against NIST 800-61 and built to be reusable by any security team.',chips:['NIST 800-61','Incident Response','Documentation','Playbooks'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]}
+];
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
+// ══════════════════════════════════════════
+// SKILL STORIES
+// ══════════════════════════════════════════
+var skillStories={
+  'Suspicious Activity Response':'Primary function at SpartanNash — triaging account compromise events, unauthorized access attempts, and behavioral anomalies across identity platforms, mainframes, POS, and military access systems. 30+ incidents daily.',
+  'Incident Response (NIST 800-61)':'Applied daily at SpartanNash following the NIST 800-61 framework — detect, analyze, contain, eradicate, recover, and post-incident documentation. Also the foundation of the IR Playbook Library project.',
+  'Alert Monitoring & Triage':'Operated live SIEM dashboards at CU*Answers monitoring 300+ financial institutions during peak attack windows. Alert triage is also core to the Sentinel deployment in the WGU capstone.',
+  'Compromised Account Triage':'At SpartanNash, served as primary contact for InfoSec-escalated account compromise events — credential resets, session revocation, identity verification, and secure access remediation.',
+  'Endpoint Investigation':'Investigated endpoint devices across Windows, macOS, and Linux at SpartanNash — diagnosing malfunctions, abnormal behavior, and connectivity issues, escalating to infrastructure teams when needed.',
+  'Auth & Access Anomaly Investigation':'Investigated authentication and access anomalies at SpartanNash and CU*Answers — flagging abnormal logon patterns, session irregularities, and unauthorized access attempts.',
+  'Active Directory':'Core daily platform at SpartanNash — account unlocks, password resets, MFA enrollment, group membership management, and permission grants across a nationally distributed enterprise.',
+  'Azure Entra ID':'Identity governance platform at SpartanNash. Currently the target of the IAM Access Review Automation project — connecting via Microsoft Graph API to audit stale accounts, MFA gaps, and over-permissioned roles.',
+  'MFA Enrollment & Reregistration':'High-volume task at SpartanNash — enrolling and reregistering MFA for users across corporate, retail, warehouse, and military environments with varying device and compliance requirements.',
+  'BitLocker Recovery':'Performed BitLocker recovery key retrieval at SpartanNash for locked endpoint devices — coordinating with users and infrastructure teams to restore secure access.',
+  'Least Privilege Review':'Conducted formal least-privilege access reviews at Bindplane — identifying over-permissioned roles across SaaS platforms and recommending adjustments to reduce unauthorized access risk.',
+  'SailPoint':'Identity governance platform used in IAM workflows at SpartanNash for access management and provisioning tracking.',
+  'Permission Management':'Managed temporary and persistent permission grants at SpartanNash across enterprise identity platforms — balancing access requirements against security policy for thousands of users.',
+  'Microsoft Sentinel':'Primary SIEM platform for WGU IT Capstone — configured log ingestion from workstations and servers, authored KQL detection rules for brute-force, privilege escalation, and abnormal auth patterns. Validated through controlled attack simulations.',
+  'IBM iSeries (AS400)':'Operated 24/7 production and development IBM iSeries environments at CU*Answers supporting 300+ financial institutions — monitoring job failures, abnormal terminations, and system integrity alerts.',
+  'QSYSOPR':'Primary message queue monitoring tool at CU*Answers — used to investigate job failures, subsystem alerts, and operational anomalies across the AS400 environment in real time.',
+  'ROBOT Scheduler':'Job scheduling platform at CU*Answers — used to monitor scheduled batch jobs, identify failures, and coordinate reruns across production and development environments.',
+  'Smart Operator':'Automated operations monitoring tool at CU*Answers — used alongside QSYSOPR to track subsystem health and escalate alerts to on-call engineering teams.',
+  'Windows Event Logs':'Analyzed Windows Event Logs as part of endpoint investigations at SpartanNash and as a primary data source for the Microsoft Sentinel SIEM deployment in the WGU capstone.',
+  'Real-Time Session Monitoring':'Monitored active user sessions at CU*Answers during EOD/BOD operations — tracking programmer, CSR, and staff activity across jobs and subsystems to identify operational integrity risks.',
+  'CU*BASE':'Core banking and operations platform at CU*Answers — used to monitor credit union operations, investigate job failures, and maintain production stability across 300+ member institutions.',
+  'Fedline Advantage (Federal Reserve)':'Authenticated into Federal Reserve infrastructure via Fedline Advantage using FED token and multi-factor passphrase at CU*Answers — processing ACH files and verifying completion across all credit union environments.',
+  'Cherwell ITSM':'Primary incident management platform at SpartanNash — documenting 30+ daily incidents, tracking investigative steps, prioritizing service-impacting events, maintaining a 96% SLA resolution rate.',
+  'Citrix':'Remote access platform used at SpartanNash to support users across corporate, retail, and distributed environments — troubleshooting session issues and connectivity problems.',
+  'GoAnywhere (PGP/FTP/SFTP)':'Handled PGP-encrypted FTP and SFTP file transmissions at CU*Answers — processing credit card payment files to PSCU, FIS BASE2000, TMG, and Certegy daily with balance verification.',
+  'ACH Processing':'Processed ACH transactions at CU*Answers via Fedline Advantage — pulling and uploading ACH files into production, posting transactions, and verifying completion across all credit union environments in compliance with federal financial requirements.',
+  'DSS (Military Access)':'Managed access for military personnel and environments at SpartanNash — handling authentication, access grants, and incident response for military-specific compliance requirements.',
+  'Python':'Built YAML automation script at Bindplane to dynamically generate configuration structures across 100+ documentation files. Currently building the IAM Access Review Automation tool using Python + MSAL against Microsoft Graph API.',
+  'Bash':'Used for scripting and automation tasks — recon tooling, log parsing, and operational automation. Part of the home lab and personal project toolkit.',
+  'SQL':'Used for data querying and reporting tasks in enterprise environments and personal security tooling projects.',
+  'YAML':'Built Python automation at Bindplane to generate YAML configuration structures — eliminating repetitive manual formatting and improving consistency across 100+ structured documentation files.',
+  'Git / GitHub':'Used for version control and documentation at Bindplane — consolidated 500+ cross-functional artifacts into GitHub/GitBook docs-as-code system. All personal projects hosted and documented on GitHub.',
+  'Nmap / Zenmap':'Used for network vulnerability and performance assessment in WGU C844 — scanning for open ports, service identification, and traffic analysis alongside Wireshark.',
+  'Wireshark':'Used alongside Nmap for traffic analysis and packet inspection in the WGU C844 network assessment project.',
+  'Autopsy':'Used in WGU D431 Digital Forensics — conducted mock cybercrime investigations including evidence acquisition, file system analysis, and data recovery from compromised machines.',
+  'MITRE ATT&CK':'Detection rules in the WGU Sentinel capstone are mapped to ATT&CK techniques. The Raspberry Pi honeypot project maps all observed attacker behavior to ATT&CK in real time. Core framework for purple team thinking.',
+  'NIST 800-61':'Applied daily at SpartanNash for incident response workflows. Foundation of the IR Playbook Library. Also studied as part of the WGU B.S. program and CySA+ preparation.',
+  'NIST 800-30/37/53':'Studied and applied as part of WGU B.S. curriculum and professional compliance work — risk assessment (800-30), RMF (800-37), and security controls catalog (800-53 AC-2, AC-6 directly referenced in IAM automation project).',
+  'ISO 27001':'Directly supported ISO 27001 audit readiness at Bindplane — consolidating 500+ artifacts into a GitHub/GitBook docs-as-code system to strengthen control traceability and ownership accountability.',
+  'FedRAMP':'Supported FedRAMP documentation and compliance initiatives at Bindplane. Also operated in a FedRAMP-adjacent environment at CU*Answers handling Federal Reserve ACH infrastructure.',
+  'FFIEC / NCUA':'Operated in financial environments governed by FFIEC and NCUA frameworks at CU*Answers — supporting credit union operations, ACH processing, and security monitoring for 300+ regulated institutions.',
+  'SOC 2':'Studied and applied in compliance work at Bindplane — relevant to the vendor security reviews and documentation initiatives supporting SOC 2 control requirements.',
+  'ITIL':'Earned ITIL certification. Applied daily at SpartanNash — incident management, service request handling, escalation procedures, and SLA management all follow ITIL service management principles.'
+};
 
-const particles = [];
-const PARTICLE_COUNT = 80;
+// ══════════════════════════════════════════
+// SPLASH
+// ══════════════════════════════════════════
+var spTarget='Kiarah Pettaway',spIdx=0;
+var spEl=document.getElementById('sp-text');
+var spSub=document.getElementById('sp-sub');
+var spEnter=document.getElementById('sp-enter');
 
-class Particle {
-  constructor() { this.reset(true); }
-  reset(init = false) {
-    this.x = Math.random() * canvas.width;
-    this.y = init ? Math.random() * canvas.height : -10;
-    this.size = Math.random() * 3 + 0.5;
-    this.speedY = Math.random() * 0.6 + 0.2;
-    this.speedX = (Math.random() - 0.5) * 0.4;
-    this.opacity = Math.random() * 0.4 + 0.05;
-    this.drift = Math.random() * Math.PI * 2;
-    this.driftSpeed = Math.random() * 0.01 + 0.005;
-    // Occasionally red embers
-    this.isEmber = Math.random() < 0.08;
-    this.emberPulse = 0;
+function typeSplash(){
+  if(spIdx<=spTarget.length){
+    spEl.innerHTML=spTarget.slice(0,spIdx)+'<span class="sp-cur"></span>';
+    spIdx++;
+    setTimeout(typeSplash,spIdx===1?600:70+Math.random()*35);
+  } else {
+    spSub.classList.add('show');
+    setTimeout(function(){spEnter.classList.add('show');},700);
+    setTimeout(function(){enterSite();},3800);
   }
-  update() {
-    this.drift += this.driftSpeed;
-    this.x += this.speedX + Math.sin(this.drift) * 0.3;
-    this.y += this.speedY;
-    this.emberPulse += 0.05;
-    if (this.y > canvas.height + 10) this.reset();
-  }
-  draw() {
-    ctx.save();
-    if (this.isEmber) {
-      const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
-      glow.addColorStop(0, `rgba(255,50,0,${this.opacity})`);
-      glow.addColorStop(1, 'transparent');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = `rgba(255,150,50,${this.opacity * 1.5})`;
-    } else {
-      ctx.fillStyle = `rgba(${40 + Math.floor(Math.random()*10)},${35},${35},${this.opacity})`;
-    }
-    ctx.beginPath();
-    // Ash flake shape
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.drift);
-    ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size * 0.6);
-    ctx.restore();
-    ctx.restore();
-  }
 }
 
-for (let i = 0; i < PARTICLE_COUNT; i++) {
-  particles.push(new Particle());
+var kanjiList=['死','監','探','赤','紫','攻','守','技','術','血','鞄','影','力','知'];
+var spKanji=document.getElementById('sp-kanji');
+function spawnKanji(){
+  var el=document.createElement('div');
+  el.className='sp-kanji';
+  el.textContent=kanjiList[Math.floor(Math.random()*kanjiList.length)];
+  el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(2+Math.random()*4)+'rem;animation-duration:'+(15+Math.random()*20)+'s;animation-delay:'+(Math.random()*-20)+'s;position:absolute;';
+  spKanji.appendChild(el);
+  if(spKanji.children.length>20) spKanji.removeChild(spKanji.firstChild);
 }
+for(var k=0;k<12;k++) spawnKanji();
+setInterval(spawnKanji,2000);
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animate);
-}
-animate();
-
-// ── BLOOD DRIPS ──
-const dripsEl = document.getElementById('drips');
-for (let i = 0; i < 60; i++) {
-  const d = document.createElement('div');
-  d.className = 'drip';
-  const w = Math.random() * 3 + 1;
-  d.style.cssText = `
-    width:${w}px;
-    margin-left:${Math.random() * 30}px;
-    animation-duration:${3 + Math.random() * 5}s;
-    animation-delay:${Math.random() * 6}s;
-    opacity:${0.3 + Math.random() * 0.7};
-  `;
-  dripsEl.appendChild(d);
-}
-
-// ── KANJI BACKGROUND ──
-const kanjiChars = ['死','監','探','赤','紫','攻','守','技','術','血','闇','影','力','知','罪'];
-const kanjiContainer = document.getElementById('kanji-bg');
-kanjiChars.forEach((k, i) => {
-  const el = document.createElement('div');
-  el.className = 'kanji-char';
-  el.textContent = k;
-  el.style.cssText = `
-    left: ${10 + Math.random() * 80}%;
-    animation-duration: ${20 + Math.random() * 30}s;
-    animation-delay: ${Math.random() * -25}s;
-    font-size: ${3 + Math.random() * 6}rem;
-    opacity: 0;
-  `;
-  kanjiContainer.appendChild(el);
+window.addEventListener('DOMContentLoaded',function(){
+  setTimeout(typeSplash,800);
 });
 
-// ── SCROLL REVEAL ──
-const reveals = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
+function enterSite(){
+  var sp=document.getElementById('splash');
+  if(!sp || sp.style.display==='none') return;
+  sp.classList.add('hide');
+  setTimeout(function(){
+    sp.style.display='none';
+    document.getElementById('main-nav').classList.add('show');
+    document.body.style.overflow='auto';
+    startHomeName();
+    initParticles();
+    initDrips();
+    initSkillPills();
+    setTimeout(initReveal,300);
+  },800);
+}
+document.addEventListener('keydown',function(e){if(e.key==='Enter') enterSite();});
+document.addEventListener('click',function(e){
+  var sp=document.getElementById('splash');
+  if(sp && sp.style.display!=='none' && spEnter.classList.contains('show')) enterSite();
+},{once:true});
+
+// ══════════════════════════════════════════
+// PAGE NAV
+// ══════════════════════════════════════════
+var curPage='home';
+var wipe=document.getElementById('page-wipe');
+
+function goPage(name){
+  if(name===curPage) return;
+  wipe.className='page-wipe in';
+  setTimeout(function(){
+    document.getElementById('page-'+curPage).classList.remove('active');
+    document.getElementById('page-'+curPage).classList.add('exit-up');
+    setTimeout(function(){document.getElementById('page-'+curPage).classList.remove('exit-up');},100);
+    curPage=name;
+    var pg=document.getElementById('page-'+name);
+    pg.classList.add('active');
+    pg.scrollTop=0;
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.toggle('active',b.getAttribute('data-page')===name);
+    });
+    wipe.className='page-wipe out';
+    setTimeout(function(){wipe.className='page-wipe';initReveal();updateProgress(0);},60);
+  },350);
+}
+
+// ══════════════════════════════════════════
+// MOBILE NAV
+// ══════════════════════════════════════════
+function toggleMobileNav(){
+  var menu=document.getElementById('mobile-nav');
+  var ham=document.getElementById('nav-ham');
+  var isOpen=menu.classList.contains('open');
+  if(isOpen){menu.classList.remove('open');ham.classList.remove('open');}
+  else{menu.classList.add('open');ham.classList.add('open');}
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('nav-ham').classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+// SCROLL PROGRESS
+// ══════════════════════════════════════════
+var progressBar=document.getElementById('progress-bar');
+function updateProgress(pct){
+  if(progressBar) progressBar.style.width=pct+'%';
+}
+
+document.querySelectorAll('.page').forEach(function(pg){
+  pg.addEventListener('scroll',function(){
+    var scrolled=pg.scrollTop;
+    var total=pg.scrollHeight - pg.clientHeight;
+    updateProgress(total>0?(scrolled/total*100):0);
+  });
+});
+
+// ══════════════════════════════════════════
+// REVEAL
+// ══════════════════════════════════════════
+function initReveal(){
+  var pg=document.getElementById('page-'+curPage);
+  pg.querySelectorAll('.reveal').forEach(function(el,i){
+    el.classList.remove('visible');
+    setTimeout(function(){el.classList.add('visible');},80+i*75);
+  });
+}
+
+// ══════════════════════════════════════════
+// HOME NAME TYPEWRITER
+// ══════════════════════════════════════════
+var names=['Kiarah','Kira','Kasai','Kurenai','Kiseki'];
+var hIdx=0,hChar=0,hDel=false,hStarted=false;
+var hEl,hAlias;
+
+function startHomeName(){
+  if(hStarted) return;
+  hStarted=true;
+  hEl=document.getElementById('home-first');
+  hAlias=document.getElementById('name-alias');
+  hChar=names[0].length;
+  hDel=false;
+  hEl.innerHTML=names[0]+'<span class="type-cur"></span>';
+  setTimeout(function(){hDel=true;typeHomeName();},2400);
+}
+
+function typeHomeName(){
+  var cur=names[hIdx];
+  if(!hDel){
+    hChar++;
+    hEl.innerHTML=cur.slice(0,hChar)+'<span class="type-cur"></span>';
+    if(hChar===cur.length){
+      hDel=true;
+      // Show alias label for non-real names
+      if(hIdx>0 && hAlias){hAlias.classList.add('show');}
+      setTimeout(typeHomeName,1900);
+      return;
+    }
+    setTimeout(typeHomeName,90+Math.random()*40);
+  } else {
+    hChar--;
+    hEl.innerHTML=cur.slice(0,hChar)+'<span class="type-cur"></span>';
+    if(hChar===0){
+      hDel=false;
+      if(hAlias) hAlias.classList.remove('show');
+      hIdx=(hIdx+1)%names.length;
+      setTimeout(typeHomeName,320);
+      return;
+    }
+    setTimeout(typeHomeName,52);
+  }
+}
+
+// ══════════════════════════════════════════
+// BG PARTICLES
+// ══════════════════════════════════════════
+var bgC=document.getElementById('bg-canvas');
+var bgX=bgC.getContext('2d');
+var bgP=[];
+function resizeBg(){bgC.width=window.innerWidth;bgC.height=window.innerHeight;}
+resizeBg();
+window.addEventListener('resize',resizeBg);
+function newPart(scatter){
+  return{x:Math.random()*bgC.width,y:scatter?Math.random()*bgC.height:-8,
+    sz:Math.random()*2.5+0.4,vy:Math.random()*.5+.15,vx:(Math.random()-.5)*.3,
+    drift:Math.random()*Math.PI*2,ds:Math.random()*.008+.004,
+    op:Math.random()*.35+.05,ember:Math.random()<.07};
+}
+function initParticles(){
+  bgP=[];
+  for(var i=0;i<65;i++) bgP.push(newPart(true));
+  animBg();
+}
+function animBg(){
+  bgX.clearRect(0,0,bgC.width,bgC.height);
+  bgP.forEach(function(p){
+    p.drift+=p.ds;p.x+=p.vx+Math.sin(p.drift)*.25;p.y+=p.vy;
+    if(p.y>bgC.height+8) Object.assign(p,newPart(false));
+    bgX.save();
+    if(p.ember){
+      var g=bgX.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);
+      g.addColorStop(0,'rgba(255,60,0,'+p.op+')');
+      g.addColorStop(1,'transparent');
+      bgX.fillStyle=g;bgX.beginPath();bgX.arc(p.x,p.y,p.sz*3,0,Math.PI*2);bgX.fill();
+    }
+    bgX.translate(p.x,p.y);bgX.rotate(p.drift);
+    bgX.fillStyle=p.ember?'rgba(255,120,40,'+p.op+')':'rgba(40,30,30,'+p.op+')';
+    bgX.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz*.6);
+    bgX.restore();
+  });
+  requestAnimationFrame(animBg);
+}
+
+// ══════════════════════════════════════════
+// DRIPS
+// ══════════════════════════════════════════
+function initDrips(){
+  var bar=document.getElementById('drip-bar');
+  for(var i=0;i<50;i++){
+    var d=document.createElement('div');
+    d.className='drip';
+    d.style.cssText='width:'+(Math.random()*2+1)+'px;margin-left:'+(Math.random()*40)+'px;animation-duration:'+(3+Math.random()*6)+'s;animation-delay:'+(Math.random()*8)+'s;opacity:'+(0.2+Math.random()*.6);
+    bar.appendChild(d);
+  }
+}
+
+// ══════════════════════════════════════════
+// CURSOR TRAIL
+// ══════════════════════════════════════════
+document.addEventListener('mousemove',function(e){
+  var d=document.createElement('div');
+  d.style.cssText='position:fixed;left:'+e.clientX+'px;top:'+e.clientY+'px;width:4px;height:4px;background:rgba(192,0,10,.38);border-radius:50%;pointer-events:none;z-index:9999;transition:opacity .5s;';
+  document.body.appendChild(d);
+  setTimeout(function(){d.style.opacity='0';setTimeout(function(){if(d.parentNode)d.remove();},500);},80);
+});
+
+// ══════════════════════════════════════════
+// CLICKABLE SKILL PILLS WITH STORIES
+// ══════════════════════════════════════════
+var tooltip=null;
+function initSkillPills(){
+  // Create tooltip element
+  tooltip=document.createElement('div');
+  tooltip.className='skill-tooltip';
+  tooltip.innerHTML='<div class="skill-tooltip-title" id="tt-title"></div><div id="tt-body"></div>';
+  document.body.appendChild(tooltip);
+
+  document.querySelectorAll('.skill-pill').forEach(function(pill){
+    var name=pill.textContent.trim().replace(/\u0026amp;/g,'&').replace(/&amp;/g,'&');
+    if(skillStories[name]){
+      pill.classList.add('has-story');
+      pill.addEventListener('mouseenter',function(e){
+        document.getElementById('tt-title').textContent=name;
+        document.getElementById('tt-body').textContent=skillStories[name];
+        tooltip.classList.add('show');
+        positionTooltip(e);
+      });
+      pill.addEventListener('mousemove',positionTooltip);
+      pill.addEventListener('mouseleave',function(){
+        tooltip.classList.remove('show');
+      });
     }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-reveals.forEach(el => observer.observe(el));
+}
 
-// ── CURSOR TRAIL ──
-document.addEventListener('mousemove', e => {
-  const x = e.clientX, y = e.clientY;
-  const dot = document.createElement('div');
-  dot.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:4px;height:4px;background:rgba(192,0,10,0.5);border-radius:50%;pointer-events:none;z-index:9999;transition:opacity 0.5s`;
-  document.body.appendChild(dot);
-  setTimeout(() => { dot.style.opacity = '0'; setTimeout(() => dot.remove(), 500); }, 100);
+function positionTooltip(e){
+  if(!tooltip) return;
+  var x=e.clientX+16,y=e.clientY-10;
+  if(x+330>window.innerWidth) x=e.clientX-340;
+  if(y+120>window.innerHeight) y=e.clientY-130;
+  tooltip.style.left=x+'px';
+  tooltip.style.top=y+'px';
+}
+
+// ══════════════════════════════════════════
+// PROJECT MODAL
+// ══════════════════════════════════════════
+function openModal(idx){
+  var p=projectData[idx];
+  document.getElementById('modalTitle').textContent=p.title;
+  document.getElementById('modalContext').textContent=p.context;
+  document.getElementById('modalDesc').textContent=p.desc;
+  document.getElementById('modalStack').innerHTML=p.chips.map(function(ch){
+    return '<span class="chip chip-r">'+ch+'</span>';
+  }).join('');
+  document.getElementById('modalLinks').innerHTML=p.links.map(function(l){
+    var s=l.url.replace('https://github.com/','');
+    return '<a href="'+l.url+'" target="_blank" class="modal-link-row">'+
+      '<span class="modal-link-icon">'+l.icon+'</span>'+
+      '<span class="modal-link-text">'+l.label+'</span>'+
+      '<span class="modal-link-url">'+s+'</span></a>';
+  }).join('');
+  document.getElementById('projectModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('projectModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('projectModal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeModal();
 });
 </script>
 </body>
