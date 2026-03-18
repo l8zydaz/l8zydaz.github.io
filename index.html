@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kiarah Pettaway · Shinigami</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #050505;
+  --red: #c0000a;
+  --red-bright: #ff1a1a;
+  --red-dim: rgba(192,0,10,0.15);
+  --ash: #2a2a2a;
+  --bone: #e8e0d0;
+  --parchment: #c8b89a;
+  --ink: #1a0a0a;
+  --muted: #555;
+  --text: #9a8878;
+  --white: #f5f0eb;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Serif JP', serif;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* CUSTOM CURSOR */
+body * { cursor: crosshair; }
+
+/* CANVAS FOR PARTICLES */
+#canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* BLOOD DRIP TOP */
+.blood-drip {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  z-index: 200;
+  pointer-events: none;
+  display: flex;
+  gap: 0;
+}
+.drip {
+  width: 3px;
+  background: linear-gradient(180deg, var(--red) 0%, transparent 100%);
+  animation: drip-fall linear infinite;
+  transform-origin: top center;
+  border-radius: 0 0 50% 50%;
+}
+@keyframes drip-fall {
+  0% { height: 0; opacity: 1; }
+  70% { opacity: 1; }
+  100% { height: 100px; opacity: 0; }
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 3rem;
+  background: linear-gradient(180deg, rgba(5,5,5,0.98) 0%, transparent 100%);
+}
+.nav-sigil {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--red);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(192,0,10,0.5);
+}
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 1px;
+  background: var(--red);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.nav-links a:hover { color: var(--red); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 6rem 2rem 4rem;
+}
+
+/* RAVEN SVG */
+.raven-container {
+  position: absolute;
+  top: 15%;
+  right: 8%;
+  opacity: 0;
+  animation: raven-appear 2s ease 0.5s forwards;
+}
+@keyframes raven-appear {
+  0% { opacity: 0; transform: translateY(-30px) rotate(-10deg); }
+  100% { opacity: 0.6; transform: translateY(0) rotate(0deg); }
+}
+.raven-container svg {
+  width: 120px;
+  filter: drop-shadow(0 0 20px rgba(192,0,10,0.3));
+  animation: raven-perch 4s ease-in-out infinite;
+}
+@keyframes raven-perch {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* DEATH NOTE BOOK */
+.deathnote-accent {
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  opacity: 0;
+  animation: notebook-appear 1.5s ease 1s forwards;
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  color: var(--red);
+  letter-spacing: 0.1em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  border-right: 1px solid var(--red);
+  padding-right: 0.5rem;
+  line-height: 2;
+  opacity: 0;
+}
+@keyframes notebook-appear {
+  to { opacity: 0.4; }
+}
+
+/* JAPANESE CHARACTERS */
+.kanji-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+.kanji-char {
+  position: absolute;
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(192,0,10,0.08);
+  animation: kanji-drift linear infinite;
+  user-select: none;
+}
+@keyframes kanji-drift {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-20vh) rotate(20deg); opacity: 0; }
+}
+
+/* HERO CONTENT */
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--red);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: reveal-up 0.8s ease 0.3s forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: '✦';
+  font-size: 0.5rem;
+  color: var(--red);
+}
+
+.hero-name {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.9;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: reveal-up 1s ease 0.5s forwards;
+  text-shadow:
+    0 0 60px rgba(192,0,10,0.2),
+    0 2px 0 rgba(0,0,0,0.8);
+}
+.hero-name span {
+  display: block;
+  color: var(--red);
+  font-size: 0.55em;
+  letter-spacing: 0.4em;
+  text-shadow: 0 0 40px rgba(192,0,10,0.6);
+}
+
+.hero-rule {
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  margin: 2rem auto;
+  opacity: 0;
+  animation: reveal-fade 0.8s ease 1s forwards;
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 300;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  line-height: 2;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  animation: reveal-up 0.8s ease 1.2s forwards;
+}
+
+.hero-decree {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--parchment);
+  letter-spacing: 0.2em;
+  border: 1px solid rgba(192,0,10,0.3);
+  padding: 0.75rem 2rem;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: reveal-fade 1s ease 1.5s forwards;
+  position: relative;
+}
+.hero-decree::before {
+  content: '§';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg);
+  padding: 0 4px;
+  color: var(--red);
+  font-size: 1rem;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  opacity: 0;
+  animation: reveal-up 0.8s ease 1.7s forwards;
+}
+.hero-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--muted);
+  border: 1px solid #1a1a1a;
+  padding: 0.2rem 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.hero-tag:hover, .hero-tag.marked {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-dim);
+  box-shadow: 0 0 15px rgba(192,0,10,0.2);
+}
+
+.scroll-prompt {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: reveal-fade 1s ease 2.5s forwards;
+}
+.scroll-prompt span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.scroll-arrow {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--red), transparent);
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* GENERAL ANIMATIONS */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* SECTION WRAPPER */
+.section-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 6rem 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* SECTION HEADER */
+.sec-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+.sec-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(192,0,10,0.4);
+  line-height: 1;
+}
+.sec-title-block { display: flex; flex-direction: column; gap: 0.2rem; }
+.sec-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--red);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.05em;
+}
+
+/* DIVIDER */
+.blood-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--red) 0%, rgba(192,0,10,0.3) 40%, transparent 70%);
+  margin: 0 3rem;
+  max-width: calc(1100px - 6rem);
+  position: relative;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+/* PROJECT CARDS */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: rgba(10,5,5,0.8);
+  border: 1px solid #1a0808;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 2px; height: 0;
+  background: var(--red);
+  transition: height 0.4s ease;
+}
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(192,0,10,0.03) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.project-card:hover::before { height: 100%; }
+.project-card:hover::after { opacity: 1; }
+.project-card:hover {
+  border-color: rgba(192,0,10,0.3);
+  transform: translateX(4px);
+  box-shadow: -4px 0 30px rgba(192,0,10,0.1), 20px 0 60px rgba(0,0,0,0.5);
+}
+
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.card-icon { font-size: 1.3rem; }
+
+.badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+}
+.badge-done { color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
+.badge-wip  { color: var(--red); border: 1px solid rgba(192,0,10,0.3); }
+.badge-award { color: #d4af37; border: 1px solid rgba(212,175,55,0.3); }
+
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+}
+.card-context {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-top: -0.5rem;
+}
+.card-desc { font-size: 0.83rem; color: var(--text); line-height: 1.8; flex: 1; }
+
+.card-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  padding: 0.12rem 0.45rem;
+  letter-spacing: 0.06em;
+}
+.chip-r { color: var(--red); background: rgba(192,0,10,0.06); border: 1px solid rgba(192,0,10,0.15); }
+.chip-g { color: #666; background: rgba(100,100,100,0.06); border: 1px solid rgba(100,100,100,0.15); }
+
+.card-links {
+  display: flex; gap: 1rem; padding-top: 0.75rem;
+  border-top: 1px solid #1a0808; flex-wrap: wrap;
+}
+.card-link {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.3s;
+}
+.card-link:hover { color: var(--red); }
+
+/* SKILLS GRID */
+.skills-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+.skill-card {
+  background: rgba(10,5,5,0.8);
+  border: 1px solid #1a0808;
+  padding: 1.4rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.skill-card::after {
+  content: attr(data-kanji);
+  position: absolute;
+  bottom: -10px; right: 5px;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(192,0,10,0.04);
+  pointer-events: none;
+  line-height: 1;
+}
+.skill-card:hover { border-color: rgba(192,0,10,0.2); }
+.skill-card h3 {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--red);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #1a0808;
+}
+.skill-items { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.skill-pill {
+  font-size: 0.78rem;
+  color: var(--text);
+  background: rgba(20,10,10,0.8);
+  border: 1px solid #1e1010;
+  padding: 0.2rem 0.6rem;
+  transition: all 0.25s;
+}
+.skill-pill:hover { border-color: var(--red); color: var(--bone); }
+
+/* CERTS */
+.certs-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+.cert-tile {
+  background: rgba(10,5,5,0.8);
+  border: 1px solid #1a0808;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.3s;
+}
+.cert-tile:hover { border-color: rgba(192,0,10,0.3); transform: translateY(-2px); }
+.cert-mark { font-size: 1rem; }
+.cert-name { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--white); font-weight: 700; }
+.cert-issuer { font-size: 0.7rem; color: var(--muted); }
+
+/* EXPERIENCE */
+.exp-item {
+  display: grid;
+  grid-template-columns: 1px 1fr;
+  gap: 0 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.exp-spine {
+  width: 1px;
+  background: linear-gradient(180deg, var(--red), #1a0808);
+  position: relative;
+}
+.exp-spine::before {
+  content: '✦';
+  position: absolute;
+  top: 2px;
+  left: -7px;
+  font-size: 0.6rem;
+  color: var(--red);
+  text-shadow: 0 0 10px var(--red);
+}
+.exp-body {}
+.exp-role { font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.15rem; }
+.exp-company { font-family: 'Space Mono', monospace; font-size: 0.62rem; color: var(--red); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.1rem; }
+.exp-date { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); margin-bottom: 0.75rem; }
+.exp-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.exp-list li { font-size: 0.85rem; color: var(--text); padding-left: 1.2rem; position: relative; line-height: 1.7; }
+.exp-list li::before { content: '—'; position: absolute; left: 0; color: var(--red); font-size: 0.7rem; }
+
+/* ABOUT */
+.about-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; }
+.about-text p { font-size: 0.9rem; color: var(--text); line-height: 2; margin-bottom: 1.2rem; }
+.about-text strong { color: var(--white); }
+.about-text .red { color: var(--red); }
+.about-text .scroll-quote {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--parchment);
+  border-left: 2px solid var(--red);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  line-height: 1.9;
+}
+
+.contact-scroll {
+  background: linear-gradient(160deg, rgba(15,5,5,0.9) 0%, rgba(10,3,3,0.95) 100%);
+  border: 1px solid #1a0808;
+  padding: 2rem;
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+.contact-scroll h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--white);
+  letter-spacing: 0.05em;
+}
+.c-row { display: flex; flex-direction: column; gap: 0.2rem; }
+.c-label { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+.c-val { font-size: 0.85rem; color: var(--text); }
+.c-val a { color: var(--red); text-decoration: none; }
+.c-val a:hover { text-shadow: 0 0 12px rgba(192,0,10,0.5); }
+.c-divider { height: 1px; background: linear-gradient(90deg, var(--red), transparent); opacity: 0.3; }
+.btn-scroll {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.8rem 1rem;
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  transition: all 0.3s;
+  cursor: crosshair;
+}
+.btn-scroll:hover {
+  background: var(--red);
+  color: var(--white);
+  box-shadow: 0 0 30px rgba(192,0,10,0.3);
+}
+
+/* PURPLE TEAM BANNER */
+.purple-banner {
+  background: linear-gradient(135deg, rgba(60,0,80,0.3) 0%, rgba(30,0,60,0.2) 50%, rgba(192,0,10,0.15) 100%);
+  border: 1px solid rgba(100,0,150,0.3);
+  border-left: 3px solid #9b30ff;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.purple-banner::before {
+  content: '⚔';
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  opacity: 0.15;
+}
+.purple-banner-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  color: #9b30ff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.purple-banner-text {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.8;
+}
+.purple-banner-text strong { color: var(--white); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid #1a0808;
+  padding: 2.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+.footer-sigil {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.footer-sigil span { color: var(--red); }
+
+/* SCROLL REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .hero-inner, .about-layout, .skills-grid { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 1rem 1.5rem; }
+  .section-wrap { padding: 4rem 1.5rem; }
+  footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- BLOOD DRIPS -->
+<div class="blood-drip" id="drips"></div>
+
+<!-- KANJI BG -->
+<div class="kanji-bg" id="kanji-bg"></div>
+
+<nav>
+  <div class="nav-sigil">K · Pettaway</div>
+  <ul class="nav-links">
+    <li><a href="#projects">案件</a></li>
+    <li><a href="#experience">経験</a></li>
+    <li><a href="#skills">技能</a></li>
+    <li><a href="#about">自己</a></li>
+  </ul>
+</nav>
+
+<!-- RAVEN -->
+<div class="raven-container">
+  <svg viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Raven body -->
+    <path d="M60 100 C40 95 20 85 15 70 C10 55 25 45 35 50 C30 40 20 30 30 20 C38 12 50 18 55 28 C58 22 65 15 75 20 C85 25 82 38 78 46 C88 40 100 45 98 58 C96 70 82 78 75 82 C80 88 82 98 75 105 C68 112 60 108 60 100Z" fill="#1a1a1a" stroke="#333" stroke-width="0.5"/>
+    <!-- Wing spread left -->
+    <path d="M35 50 C25 42 10 38 5 30 C2 24 8 18 15 22 C10 16 12 8 20 10 C26 12 28 20 30 26 C28 20 30 12 38 14 C44 16 44 26 42 32 C46 26 50 20 56 24 C60 28 56 36 52 40 C48 35 44 42 38 46Z" fill="#222" stroke="#2a2a2a" stroke-width="0.5"/>
+    <!-- Wing spread right -->
+    <path d="M78 46 C88 38 103 34 108 26 C111 20 105 14 98 18 C103 12 101 4 93 6 C87 8 85 16 83 22 C85 16 83 8 75 10 C69 12 69 22 71 28 C67 22 63 16 57 20 C53 24 57 32 61 36 C65 31 69 38 75 42Z" fill="#222" stroke="#2a2a2a" stroke-width="0.5"/>
+    <!-- Eye -->
+    <circle cx="56" cy="38" r="3" fill="#c0000a" opacity="0.9"/>
+    <circle cx="57" cy="37" r="1" fill="#ff3333"/>
+    <!-- Beak -->
+    <path d="M52 42 C48 44 44 46 42 50 C46 49 52 47 54 44Z" fill="#333"/>
+    <!-- Tail feathers -->
+    <path d="M55 100 C50 115 42 125 38 135 M60 100 C60 118 58 130 55 140 M65 100 C70 115 72 127 75 138" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+    <!-- Red glow eye -->
+    <circle cx="56" cy="38" r="6" fill="none" stroke="rgba(192,0,10,0.3)" stroke-width="1">
+      <animate attributeName="r" values="4;7;4" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+</div>
+
+<div class="deathnote-accent">死亡ノート · CYBERSECURITY · 赤チーム</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">IAM &amp; Security Operations Analyst</div>
+  <h1 class="hero-name">
+    Kiarah<br/>
+    <span>Pettaway</span>
+  </h1>
+  <div class="hero-rule"></div>
+  <p class="hero-subtitle">
+    IAM &amp; Security Operations · Federal Reserve infrastructure · FedRAMP · ISO 27001<br/>
+    I monitor, respond, and study how to break the things I defend.
+  </p>
+  <div class="hero-decree">
+    Whoever's name is written in this notebook shall be detected.
+  </div>
+  <div class="hero-tags">
+    <span class="hero-tag marked">SIEM</span>
+    <span class="hero-tag marked">Red Teaming</span>
+    <span class="hero-tag">Purple Team</span>
+    <span class="hero-tag">Threat Detection</span>
+    <span class="hero-tag">Offensive Security</span>
+    <span class="hero-tag">Digital Forensics</span>
+    <span class="hero-tag">Microsoft Sentinel</span>
+    <span class="hero-tag">MITRE ATT&CK</span>
+  </div>
+  <div class="scroll-prompt">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<div class="blood-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+<div class="section-wrap">
+  <div class="sec-header reveal">
+    <div class="sec-kanji">案</div>
+    <div class="sec-title-block">
+      <div class="sec-label">// work</div>
+      <div class="sec-title">Projects</div>
+    </div>
+  </div>
+
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="card-top">
+        <div class="card-icon">🛡️</div>
+        <span class="badge badge-done">Complete</span>
+      </div>
+      <div class="card-title">Security Monitoring & Detection Program</div>
+      <div class="card-context">WGU IT Capstone C769 · Ablique Game Studios</div>
+      <div class="card-desc">Designed and deployed a centralized SIEM for a simulated 18-person game development studio using Microsoft Sentinel. Configured end-to-end log ingestion, authored detection rules targeting brute-force, privilege escalation, and abnormal auth patterns, then validated through controlled attack simulations. Alerts fired consistently. False positives: minimal.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Microsoft Sentinel</span><span class="chip chip-r">Azure</span><span class="chip chip-r">KQL</span>
+        <span class="chip chip-g">MITRE ATT&CK</span><span class="chip chip-g">NIST 800-137</span>
+      </div>
+      <div class="card-links">
+        <a href="capstone-proposal.md" class="card-link">📄 Proposal</a>
+        <a href="capstone-report.md" class="card-link">📋 Report</a>
+        <a href="https://github.com/l8zydaz/wgu-projects" target="_blank" class="card-link">↗ GitHub</a>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="card-top"><div class="card-icon">🔬</div><span class="badge badge-done">Complete</span></div>
+      <div class="card-title">Digital Forensics Investigation</div>
+      <div class="card-context">WGU D431 Digital Forensics</div>
+      <div class="card-desc">Conducted mock cybercrime investigations using Autopsy and FTK Imager — evidence acquisition, file system analysis, data recovery from compromised machines. Produced formal forensic reports with documented chain of custody, findings, and conclusions mirroring real-world analyst standards.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Autopsy</span><span class="chip chip-r">FTK Imager</span>
+        <span class="chip chip-g">Digital Forensics</span><span class="chip chip-g">Evidence Handling</span>
+      </div>
+      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/digital-forensics-d431" target="_blank" class="card-link">↗ GitHub</a></div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="card-top"><div class="card-icon">📡</div><span class="badge badge-done">Complete</span></div>
+      <div class="card-title">Network Assessment & Security Awareness</div>
+      <div class="card-context">WGU C844 Emerging Technologies</div>
+      <div class="card-desc">Full network vulnerability and performance assessment using Nmap and Wireshark, followed by a security awareness training program covering AI-driven attacks, social engineering, and emerging adversary techniques. Technical assessment meets human-layer defense.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Nmap</span><span class="chip chip-r">Wireshark</span>
+        <span class="chip chip-g">Vulnerability Assessment</span><span class="chip chip-g">Security Awareness</span>
+      </div>
+      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/emerging-tech-c844" target="_blank" class="card-link">↗ GitHub</a></div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="card-top"><div class="card-icon">⚖️</div><span class="badge badge-done">Complete</span></div>
+      <div class="card-title">Legal Analysis & Ethical Framework</div>
+      <div class="card-context">WGU C841 Legal Issues in InfoSec</div>
+      <div class="card-desc">Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA requirements. Developed a complete ethical guidance framework and SATE training plan — translating complex regulatory obligations into actionable organizational policy.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Compliance Analysis</span>
+        <span class="chip chip-g">HIPAA</span><span class="chip chip-g">SOX</span><span class="chip chip-g">ECPA</span>
+      </div>
+      <div class="card-links"><a href="https://github.com/l8zydaz/wgu-projects/tree/main/legal-issues-infosec-c841" target="_blank" class="card-link">↗ GitHub</a></div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="card-top"><div class="card-icon">🏆</div><span class="badge badge-award">Award Winner</span></div>
+      <div class="card-title">Systems Analysis — WGU Award Recipient</div>
+      <div class="card-context">WGU D372 Systems Thinking · 2024</div>
+      <div class="card-desc">Applied systems thinking frameworks to three complex scenarios using Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes. Task 1 awarded WGU's Systems Thinking Award for excellence in applied systems modeling and analysis.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Systems Modeling</span>
+        <span class="chip chip-g">Causal Loop Diagrams</span><span class="chip chip-g">Root Cause Analysis</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/l8zydaz/wgu-projects/tree/main/systems-thinking-d372" target="_blank" class="card-link">↗ GitHub</a>
+        <a href="https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/award.pdf" target="_blank" class="card-link">🏆 Award</a>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="card-top"><div class="card-icon">🖥️</div><span class="badge badge-wip">In Progress</span></div>
+      <div class="card-title">Home SOC & Penetration Testing Lab</div>
+      <div class="card-context">Personal Project</div>
+      <div class="card-desc">Building a home lab with Active Directory simulation, vulnerable machine environments, and attack chains using Kali Linux. Security Onion and Elastic SIEM on the blue team side. TryHackMe and CTF writeups to be published. This is where theory becomes practice.</div>
+      <div class="card-stack">
+        <span class="chip chip-r">Kali Linux</span><span class="chip chip-r">Active Directory</span><span class="chip chip-r">Security Onion</span>
+        <span class="chip chip-g">Elastic SIEM</span><span class="chip chip-g">CTF</span>
+      </div>
+      <div class="card-links"><a href="https://github.com/l8zydaz" target="_blank" class="card-link">↗ Coming Soon</a></div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<div class="blood-divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+<div class="section-wrap">
+  <div class="sec-header reveal">
+    <div class="sec-kanji">経</div>
+    <div class="sec-title-block">
+      <div class="sec-label">// experience</div>
+      <div class="sec-title">Work History</div>
+    </div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-spine"></div>
+    <div>
+      <div class="exp-role">IT Operations & Security Analyst</div>
+      <div class="exp-company">SpartanNash · Byron Center, MI</div>
+      <div class="exp-date">October 2025 — Present</div>
+      <ul class="exp-list">
+        <li>Resolved complex technical issues across a diverse enterprise environment spanning identity platforms, mainframe systems, point-of-sale infrastructure, and military access systems — exercising independent judgment to troubleshoot or escalate appropriately</li>
+        <li>Supported thousands of users across corporate, retail, warehouse, and military environments — authenticating users and managing access across multiple business segments with varying security and compliance requirements</li>
+        <li>Performed high-volume access management operations: password recovery, account unlocks, MFA enrollment and reregistration, BitLocker recovery, and temporary and persistent permission grants across enterprise identity platforms</li>
+        <li>Served as primary point of contact for authentication and access restoration — handling credential resets and identity verification for routine requests and InfoSec-escalated account compromise events requiring secure access remediation</li>
+        <li>Triaged and managed 30+ incidents daily within Cherwell ITSM — documenting investigative steps, prioritizing service-impacting events, maintaining a personal <strong>96% SLA resolution rate</strong> across a geographically dispersed enterprise</li>
+        <li>Investigated endpoint devices for malfunctions, abnormal behavior, and connectivity issues across Windows, macOS, and Linux — resolving independently or escalating to infrastructure teams</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-spine"></div>
+    <div>
+      <div class="exp-role">Security Engineer (Internship)</div>
+      <div class="exp-company">Bindplane · Grand Rapids, MI</div>
+      <div class="exp-date">May 2025 — August 2025</div>
+      <ul class="exp-list">
+        <li>Spearheaded consolidation of 500+ cross-functional artifacts into a centralized GitHub/GitBook documentation-as-code system, strengthening control traceability and audit readiness for ISO 27001 and FedRAMP initiatives</li>
+        <li>Conducted IAM and access control reviews across SaaS platforms — identifying over-permissioned roles and recommending least-privilege adjustments to reduce unauthorized access risk</li>
+        <li>Conducted a vendor security review of Google IPA on behalf of company leadership prior to contract renewal — evaluating platform security posture and delivering findings that informed the procurement decision</li>
+        <li>Partnered with the engineering team and CEO to update integration configurations, data destinations, and log sources within Grafana Labs — improving telemetry pipeline accuracy and monitoring coverage across production</li>
+        <li>Developed and deployed a Python-based automation script to dynamically generate YAML configuration structures — eliminating repetitive manual formatting and improving consistency across 100+ structured documentation files</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exp-item reveal">
+    <div class="exp-spine"></div>
+    <div>
+      <div class="exp-role">Data Center Operations Specialist</div>
+      <div class="exp-company">CU*Answers · Kentwood, MI</div>
+      <div class="exp-date">April 2024 — January 2025</div>
+      <ul class="exp-list">
+        <li>Monitored 24/7 IBM iSeries (AS400) production and development environments supporting 300+ financial institutions — investigating job failures, abnormal terminations, and system integrity alerts through QSYSOPR, ROBOT, and CU*BASE</li>
+        <li>Operated a live SIEM dashboard throughout the night shift — monitoring subsystem health, user logon activity, and job failure events in real time during peak attack windows, creating and escalating incidents based on observed anomalies</li>
+        <li>Authenticated into Federal Reserve infrastructure via Fedline Advantage using FED token and multi-factor passphrase — pulling and uploading ACH files into production in compliance with federal financial processing requirements</li>
+        <li>Processed and transmitted credit card payment files to PSCU, FIS BASE2000, TMG, and Certegy via PGP-encrypted FTP/SFTP — verifying balance and status reports and confirming successful ingestion across all vendor integrations daily</li>
+        <li>Responded to message center errors by analyzing job logs and collaborating with programmers on code-level issues — restoring production stability within SLA requirements across 300+ institutions handling <strong>$50M+ in daily transactions</strong></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<div class="blood-divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+<div class="section-wrap">
+  <div class="sec-header reveal">
+    <div class="sec-kanji">技</div>
+    <div class="sec-title-block">
+      <div class="sec-label">// capabilities</div>
+      <div class="sec-title">Skills & Certifications</div>
+    </div>
+  </div>
+
+  <div class="certs-row reveal">
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">CySA+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">SSCP</div><div class="cert-issuer">Associate of (ISC²) · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">Security+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">Network+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">A+</div><div class="cert-issuer">CompTIA · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">✅</div><div><div class="cert-name">ITIL</div><div class="cert-issuer">Axelos · Earned</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">🔴</div><div><div class="cert-name">PenTest+</div><div class="cert-issuer">CompTIA · Pending</div></div></div>
+    <div class="cert-tile"><div class="cert-mark">🎓</div><div><div class="cert-name">B.S. Cybersecurity & IA</div><div class="cert-issuer">WGU · 2026</div></div></div>
+  </div>
+
+  <div class="skills-grid reveal">
+    <div class="skill-card" data-kanji="監">
+      <h3>Security Operations</h3>
+      <div class="skill-items">
+        <span class="skill-pill">Suspicious Activity Response</span><span class="skill-pill">Incident Response (NIST 800-61)</span>
+        <span class="skill-pill">Alert Monitoring & Triage</span><span class="skill-pill">Compromised Account Triage</span>
+        <span class="skill-pill">Endpoint Investigation</span><span class="skill-pill">Phishing & Social Eng. Response</span>
+        <span class="skill-pill">Auth & Access Anomaly Investigation</span>
+      </div>
+    </div>
+    <div class="skill-card" data-kanji="鍵">
+      <h3>Identity & Access Management</h3>
+      <div class="skill-items">
+        <span class="skill-pill">Active Directory</span><span class="skill-pill">Azure Entra ID</span>
+        <span class="skill-pill">MFA Enrollment & Reregistration</span><span class="skill-pill">BitLocker Recovery</span>
+        <span class="skill-pill">Least Privilege Review</span><span class="skill-pill">SailPoint</span>
+        <span class="skill-pill">Permission Management</span><span class="skill-pill">Account Unlock & Lockout</span>
+      </div>
+    </div>
+    <div class="skill-card" data-kanji="具">
+      <h3>SIEM & Monitoring</h3>
+      <div class="skill-items">
+        <span class="skill-pill">Microsoft Sentinel</span><span class="skill-pill">IBM iSeries (AS400)</span>
+        <span class="skill-pill">QSYSOPR</span><span class="skill-pill">ROBOT Scheduler</span>
+        <span class="skill-pill">Smart Operator</span><span class="skill-pill">Windows Event Logs</span>
+        <span class="skill-pill">Real-Time Session Monitoring</span>
+      </div>
+    </div>
+    <div class="skill-card" data-kanji="銀">
+      <h3>Enterprise & Financial Systems</h3>
+      <div class="skill-items">
+        <span class="skill-pill">CU*BASE</span><span class="skill-pill">Fedline Advantage (Federal Reserve)</span>
+        <span class="skill-pill">Cherwell ITSM</span><span class="skill-pill">Citrix</span>
+        <span class="skill-pill">DSS (Military Access)</span><span class="skill-pill">GoAnywhere (PGP/FTP/SFTP)</span>
+        <span class="skill-pill">ACH Processing</span><span class="skill-pill">FIS BASE2000 / PSCU / TMG</span>
+      </div>
+    </div>
+    <div class="skill-card" data-kanji="術">
+      <h3>Scripting & Tools</h3>
+      <div class="skill-items">
+        <span class="skill-pill">Python</span><span class="skill-pill">Bash</span>
+        <span class="skill-pill">SQL</span><span class="skill-pill">YAML</span>
+        <span class="skill-pill">Git / GitHub</span><span class="skill-pill">Nmap / Zenmap</span>
+        <span class="skill-pill">Wireshark</span><span class="skill-pill">Autopsy</span>
+      </div>
+    </div>
+    <div class="skill-card" data-kanji="法">
+      <h3>Frameworks & Governance</h3>
+      <div class="skill-items">
+        <span class="skill-pill">MITRE ATT&CK</span><span class="skill-pill">NIST 800-61</span>
+        <span class="skill-pill">NIST 800-30/37/53</span><span class="skill-pill">NIST CSF</span>
+        <span class="skill-pill">ISO 27001</span><span class="skill-pill">FedRAMP</span>
+        <span class="skill-pill">FFIEC</span><span class="skill-pill">NCUA</span><span class="skill-pill">SOC 2</span><span class="skill-pill">ITIL</span>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="blood-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="section-wrap">
+  <div class="sec-header reveal">
+    <div class="sec-kanji">自</div>
+    <div class="sec-title-block">
+      <div class="sec-label">// about</div>
+      <div class="sec-title">About Me</div>
+    </div>
+  </div>
+  <div class="about-layout">
+    <div class="about-text reveal">
+
+      <div class="purple-banner">
+        <div class="purple-banner-label">⚔ Purple Team Mindset</div>
+        <div class="purple-banner-text">
+          <strong>Red informs blue. Blue sharpens red.</strong> My path into offensive security isn't about breaking things — it's about understanding how attacks work so the defenses I build actually hold. I've spent real time in live SIEM dashboards during peak attack windows, watching authentication anomalies and job failures in real time. Now I'm studying the other side of that equation. PenTest+ isn't just a certification — it's the formal foundation of a purple team philosophy I've been building since the first time I wrote a Sentinel detection rule and asked: <em>"how would I have evaded this?"</em>
+        </div>
+      </div>
+
+      <p>I'm <strong>Kiarah Pettaway</strong> — Kay. IAM and security operations professional with hands-on experience across enterprise identity governance, front-line incident response, and regulated financial environments including <span class="red">Federal Reserve infrastructure</span>, FFIEC, NCUA, FedRAMP, and ISO 27001. I hold CompTIA CySA+, SSCP, and Security+ — and I'm working toward PenTest+.</p>
+
+      <div class="scroll-quote">
+        "I know exactly how the attack works. That's why the detection rule caught it."
+      </div>
+
+      <p>My day job at SpartanNash has me triaging 30+ incidents daily with a 96% SLA resolution rate — spanning identity platforms, mainframe systems, POS infrastructure, and military access systems. Before that: a Security Engineer internship at Bindplane where I led ISO 27001 and FedRAMP documentation consolidation and deployed Python automation across 100+ config files. Before that: running live SIEM dashboards overnight at CU*Answers, processing Federal Reserve ACH transactions, and keeping $50M+ in daily financial operations stable.</p>
+
+      <p>I also received WGU's <span class="red">Systems Thinking Award</span> in 2024 — because seeing how systems fail is a security skill, not just a business one.</p>
+
+      <p><strong>Community:</strong> Active member of WGU Cyber Club, Women in CyberSecurity (WiCyS) Community Moderator, and Women in Technology (WIT). <strong>The mission:</strong> PenTest+. M.S. Cybersecurity (planned). Conferences. CTFs. A home lab running 24/7. I want to defend networks and think like the one trying to break in — then build the detections that catch them both.</p>
+    </div>
+
+    <div class="contact-scroll reveal">
+      <h3>Get in Touch</h3>
+      <div class="c-divider"></div>
+      <div class="c-row">
+        <div class="c-label">Current Role</div>
+        <div class="c-val">IT Operations & Security Analyst<br/>SpartanNash · Byron Center, MI</div>
+      </div>
+      <div class="c-row">
+        <div class="c-label">Education</div>
+        <div class="c-val">B.S. Cybersecurity & IA — WGU<br/><span style="color:var(--red)">M.S. Cybersecurity — Planned</span></div>
+      </div>
+      <div class="c-row">
+        <div class="c-label">Focus</div>
+        <div class="c-val">IAM · SecOps · Red Team · Purple Team</div>
+      </div>
+      <div class="c-row">
+        <div class="c-label">GitHub</div>
+        <div class="c-val"><a href="https://github.com/l8zydaz" target="_blank">github.com/l8zydaz</a></div>
+      </div>
+      <div class="c-row">
+        <div class="c-label">LinkedIn</div>
+        <div class="c-val"><a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank">linkedin.com/in/kiarah-pettaway</a></div>
+      </div>
+      <div class="c-row">
+        <div class="c-label">Email</div>
+        <div class="c-val"><a href="mailto:kiarahp@protonmail.com">kiarahp@protonmail.com</a></div>
+      </div>
+      <div class="c-divider"></div>
+      <a href="mailto:kiarahp@protonmail.com" class="btn-scroll">Write in the notebook →</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="footer-sigil">© 2026 Kiarah T. Pettaway · <span>All names detected</span></div>
+  <div class="footer-sigil">死 · 赤 · 紫</div>
+</footer>
+
+<script>
+// ── FALLING ASH PARTICLES ──
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const particles = [];
+const PARTICLE_COUNT = 80;
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init = false) {
+    this.x = Math.random() * canvas.width;
+    this.y = init ? Math.random() * canvas.height : -10;
+    this.size = Math.random() * 3 + 0.5;
+    this.speedY = Math.random() * 0.6 + 0.2;
+    this.speedX = (Math.random() - 0.5) * 0.4;
+    this.opacity = Math.random() * 0.4 + 0.05;
+    this.drift = Math.random() * Math.PI * 2;
+    this.driftSpeed = Math.random() * 0.01 + 0.005;
+    // Occasionally red embers
+    this.isEmber = Math.random() < 0.08;
+    this.emberPulse = 0;
+  }
+  update() {
+    this.drift += this.driftSpeed;
+    this.x += this.speedX + Math.sin(this.drift) * 0.3;
+    this.y += this.speedY;
+    this.emberPulse += 0.05;
+    if (this.y > canvas.height + 10) this.reset();
+  }
+  draw() {
+    ctx.save();
+    if (this.isEmber) {
+      const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+      glow.addColorStop(0, `rgba(255,50,0,${this.opacity})`);
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `rgba(255,150,50,${this.opacity * 1.5})`;
+    } else {
+      ctx.fillStyle = `rgba(${40 + Math.floor(Math.random()*10)},${35},${35},${this.opacity})`;
+    }
+    ctx.beginPath();
+    // Ash flake shape
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.drift);
+    ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size * 0.6);
+    ctx.restore();
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  particles.push(new Particle());
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ── BLOOD DRIPS ──
+const dripsEl = document.getElementById('drips');
+for (let i = 0; i < 60; i++) {
+  const d = document.createElement('div');
+  d.className = 'drip';
+  const w = Math.random() * 3 + 1;
+  d.style.cssText = `
+    width:${w}px;
+    margin-left:${Math.random() * 30}px;
+    animation-duration:${3 + Math.random() * 5}s;
+    animation-delay:${Math.random() * 6}s;
+    opacity:${0.3 + Math.random() * 0.7};
+  `;
+  dripsEl.appendChild(d);
+}
+
+// ── KANJI BACKGROUND ──
+const kanjiChars = ['死','監','探','赤','紫','攻','守','技','術','血','闇','影','力','知','罪'];
+const kanjiContainer = document.getElementById('kanji-bg');
+kanjiChars.forEach((k, i) => {
+  const el = document.createElement('div');
+  el.className = 'kanji-char';
+  el.textContent = k;
+  el.style.cssText = `
+    left: ${10 + Math.random() * 80}%;
+    animation-duration: ${20 + Math.random() * 30}s;
+    animation-delay: ${Math.random() * -25}s;
+    font-size: ${3 + Math.random() * 6}rem;
+    opacity: 0;
+  `;
+  kanjiContainer.appendChild(el);
+});
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// ── CURSOR TRAIL ──
+document.addEventListener('mousemove', e => {
+  const x = e.clientX, y = e.clientY;
+  const dot = document.createElement('div');
+  dot.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:4px;height:4px;background:rgba(192,0,10,0.5);border-radius:50%;pointer-events:none;z-index:9999;transition:opacity 0.5s`;
+  document.body.appendChild(dot);
+  setTimeout(() => { dot.style.opacity = '0'; setTimeout(() => dot.remove(), 500); }, 100);
+});
+</script>
+</body>
+</html>
