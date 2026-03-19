@@ -289,12 +289,538 @@ nav.show{transform:translateY(0)}
   .sec-title{font-size:1.6rem}
   .certs-grid{grid-template-columns:1fr}
 }
+
+/* ══ INDUSTRY BADGES ══ */
+.industry-badges{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.ind-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);letter-spacing:.22em;text-transform:uppercase}
+.ind-chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.ind-chip{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--parchment);background:rgba(192,0,10,.07);border:1px solid rgba(192,0,10,.2);padding:.25rem .75rem;letter-spacing:.06em;transition:all .25s;cursor:default}
+.ind-chip:hover{background:rgba(192,0,10,.15);border-color:var(--red);color:var(--white)}
+
+/* ══ DOSSIER BLOCK ══ */
+.dossier-block{background:rgba(8,3,3,.9);border:1px solid #1a0808;border-left:3px solid var(--red);padding:1.25rem 1.5rem;margin:1.5rem 0;position:relative;overflow:hidden}
+.dossier-block::after{content:'CLASSIFIED';position:absolute;top:50%;right:-1.5rem;transform:translateY(-50%) rotate(90deg);font-family:'Space Mono',monospace;font-size:.5rem;color:rgba(192,0,10,.08);letter-spacing:.3em;pointer-events:none}
+.dossier-label{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--red);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid #1a0808}
+.dossier-rows{display:flex;flex-direction:column;gap:.6rem}
+.dossier-row{display:grid;grid-template-columns:100px 1fr;gap:.75rem;align-items:baseline}
+.dossier-sector{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--red);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0}
+.dossier-detail{font-size:.82rem;color:var(--text);line-height:1.7}
+@media(max-width:600px){.dossier-row{grid-template-columns:1fr}.dossier-sector{margin-bottom:.15rem}}
+
+/* ══ IMMERSION: SCANLINES OVERLAY ══ */
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none;z-index:2;animation:scan-drift 12s linear infinite}
+@keyframes scan-drift{from{background-position:0 0}to{background-position:0 100px}}
+
+/* ══ IMMERSION: VIGNETTE ══ */
+.vignette{position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.7) 100%);pointer-events:none;z-index:2}
+
+/* ══ IMMERSION: CORNER SIGILS ══ */
+.corner-sigil{position:fixed;font-family:'Noto Serif JP',serif;font-size:.65rem;color:rgba(192,0,10,.18);pointer-events:none;z-index:3;letter-spacing:.05em;line-height:1.4}
+.corner-tl{top:1rem;left:1rem}
+.corner-tr{top:1rem;right:1rem;text-align:right}
+.corner-bl{bottom:1rem;left:1rem}
+.corner-br{bottom:1rem;right:1rem;text-align:right}
+
+/* ══ IMMERSION: RED STATIC FLICKER ══ */
+@keyframes flicker{0%,97%,100%{opacity:1}98%{opacity:.85}99%{opacity:.95}}
+#page-home .home-name{animation:flicker 8s infinite}
+
+/* ══ IMMERSION: EXPERIENCE - CLASSIFIED STAMP ══ */
+.exp-classified{position:absolute;top:1.5rem;right:2rem;font-family:'Space Mono',monospace;font-size:.55rem;color:rgba(192,0,10,.12);letter-spacing:.3em;text-transform:uppercase;border:1px solid rgba(192,0,10,.08);padding:.2rem .6rem;transform:rotate(-2deg);pointer-events:none}
+
+/* ══ IMMERSION: EXPERIENCE ENHANCED ATMOSPHERE ══ */
+#page-experience::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 80% 20%,rgba(192,0,10,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 10% 80%,rgba(192,0,10,.03) 0%,transparent 40%),
+    repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(192,0,10,.008) 80px,rgba(192,0,10,.008) 81px);
+  pointer-events:none;z-index:1}
+
+/* ══ IMMERSION: SKILLS - ENHANCED HEX GRID ══ */
+#page-skills::before{content:'';position:fixed;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(192,0,10,.018) 39px,rgba(192,0,10,.018) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(192,0,10,.018) 39px,rgba(192,0,10,.018) 40px),
+    radial-gradient(ellipse at 50% 0%,rgba(192,0,10,.04) 0%,transparent 60%);
+  pointer-events:none;z-index:1}
+
+/* ══ IMMERSION: PROJECTS - DOSSIER ATMOSPHERE ══ */
+#page-projects::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(192,0,10,.07) 0%,transparent 55%),
+    radial-gradient(ellipse at 90% 10%,rgba(192,0,10,.03) 0%,transparent 40%);
+  pointer-events:none;z-index:1}
+
+/* ══ IMMERSION: ABOUT - INK WASH ══ */
+#page-about::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 15% 40%,rgba(100,0,180,.05) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 70%,rgba(192,0,10,.03) 0%,transparent 40%);
+  pointer-events:none;z-index:1}
+
+/* ══ IMMERSION: GLITCH ON NAV HOVER ══ */
+.nav-btn:hover{color:var(--red);text-shadow:1px 0 rgba(192,0,10,.4),-1px 0 rgba(0,100,255,.15)}
+
+/* ══ IMMERSION: BLOOD POOL AT BOTTOM ══ */
+.blood-pool{position:fixed;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(192,0,10,.4),var(--red),rgba(192,0,10,.4),transparent);pointer-events:none;z-index:3;box-shadow:0 0 20px rgba(192,0,10,.3)}
+
+/* ══ IMMERSION: EXP ITEM ENHANCED ══ */
+.exp-item{position:relative}
+.exp-item:hover .exp-role{color:var(--red);transition:color .3s}
+.exp-item:hover .exp-spine{background:linear-gradient(180deg,var(--red-hot),var(--red) 80%)}
+
+/* ══ IMMERSION: STAT CHIPS ON EXPERIENCE ══ */
+.exp-stat-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}
+.exp-stat{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);background:rgba(192,0,10,.06);border:1px solid rgba(192,0,10,.2);padding:.15rem .55rem;letter-spacing:.06em}
+
+/* ══ IMMERSION: PROJECT CARD GLOW ON HOVER ══ */
+.project-card:hover{border-color:rgba(192,0,10,.3);transform:translateX(4px);box-shadow:-4px 0 30px rgba(192,0,10,.1),0 0 60px rgba(0,0,0,.5),inset 0 0 30px rgba(192,0,10,.02)}
+
+/* ══ IMMERSION: SKILL CARD PULSE ══ */
+.skill-card:hover{border-color:rgba(192,0,10,.25);box-shadow:0 0 20px rgba(192,0,10,.05)}
+
+/* ══ IMMERSION: HOME DECREE GLOW ══ */
+.home-decree{box-shadow:0 0 40px rgba(192,0,10,.04),inset 0 0 20px rgba(192,0,10,.02)}
+
+/* ══ IMMERSION: CURSOR CROSSHAIR UPGRADE ══ */
+* { cursor: crosshair !important }
+a, button, .nav-card, .project-card, .skill-pill, .nav-btn { cursor: crosshair !important }
+
+/* ══════════════════════════════════════
+   DOSSIER / CASE FILE ABOUT PAGE
+══════════════════════════════════════ */
+.dossier-header{margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.5rem}
+.dossier-stamp{font-family:'Space Mono',monospace;font-size:.55rem;color:rgba(192,0,10,.5);letter-spacing:.3em;text-transform:uppercase;border:1px solid rgba(192,0,10,.2);padding:.3rem .8rem;display:inline-block;transform:rotate(-.4deg);text-shadow:0 0 10px rgba(192,0,10,.3)}
+.dossier-stamp-top{align-self:flex-start}
+.dossier-stamp-bot{align-self:center;margin-top:2rem;font-size:.5rem;opacity:.5}
+.dossier-file-label{display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.75rem}
+.dossier-file-id{color:var(--red)}
+.dossier-file-date{color:var(--muted);font-size:.52rem}
+
+/* LAYOUT */
+.dossier-layout{display:grid;grid-template-columns:220px 1fr;gap:2rem;align-items:start}
+
+/* ID COLUMN */
+.dossier-id-col{display:flex;flex-direction:column;gap:1.25rem;position:sticky;top:7rem}
+
+/* PHOTO */
+.dossier-photo{border:1px solid var(--border);background:#0a0303;position:relative}
+.photo-inner{position:relative;overflow:hidden}
+.silhouette-svg{width:100%;display:block}
+.photo-redacted{position:absolute;bottom:.5rem;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:.5rem;color:rgba(192,0,10,.4);letter-spacing:.2em;text-align:center;text-transform:uppercase;white-space:nowrap}
+.photo-id-num{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.15em;padding:.35rem .6rem;border-top:1px solid var(--border);text-align:center}
+
+/* ID FIELDS */
+.id-fields{display:flex;flex-direction:column;gap:0;border:1px solid var(--border)}
+.id-field{padding:.45rem .65rem;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:.1rem}
+.id-field:last-child{border-bottom:none}
+.id-field-label{font-family:'Space Mono',monospace;font-size:.48rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase}
+.id-field-value{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--bone);letter-spacing:.06em}
+.red-field{color:var(--red) !important}
+.status-dot-live{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:dotpulse 2s infinite;margin-right:.4rem;vertical-align:middle}
+
+/* DOSSIER LINKS */
+.dossier-links{display:flex;flex-direction:column;gap:.35rem;border:1px solid var(--border);padding:.75rem}
+.dossier-link{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);text-decoration:none;letter-spacing:.06em;padding:.2rem 0;border-bottom:1px solid rgba(26,8,8,.5);transition:color .2s}
+.dossier-link:last-child{border-bottom:none}
+.dossier-link:hover{color:var(--red)}
+.dossier-link-dl{color:rgba(192,0,10,.6) !important;margin-top:.25rem}
+.dossier-link-dl:hover{color:var(--red) !important}
+
+/* FILE CONTENT COLUMN */
+.dossier-file-col{display:flex;flex-direction:column;gap:1.5rem}
+.file-section{border:1px solid var(--border);background:rgba(8,3,3,.8);position:relative;overflow:hidden}
+.file-section::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),transparent)}
+.file-section-header{display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-bottom:1px solid var(--border);background:rgba(15,5,5,.9)}
+.file-section-num{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--red);opacity:.7;letter-spacing:.1em}
+.file-section-title{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--parchment);letter-spacing:.2em;text-transform:uppercase}
+.file-body{font-size:.88rem;color:var(--text);line-height:1.9;padding:.9rem 1rem 0;font-family:'IM Fell English',serif}
+.file-body:last-of-type{padding-bottom:.9rem}
+.file-body strong{color:var(--white);font-style:normal}
+.red-text{color:var(--red)}
+
+/* SECTOR ROWS */
+.sector-rows{padding:.75rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+.sector-row{display:grid;grid-template-columns:90px 1fr;gap:.75rem;align-items:baseline}
+.sector-tag{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);letter-spacing:.08em;text-transform:uppercase}
+.sector-desc{font-size:.8rem;color:var(--text);line-height:1.7}
+
+/* OBJECTIVES */
+.objective-list{padding:.75rem 1rem;display:flex;flex-direction:column;gap:.5rem}
+.objective-item{display:flex;align-items:baseline;gap:.75rem}
+.obj-status{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;padding:.1rem .4rem;flex-shrink:0}
+.obj-active{color:var(--red);border:1px solid rgba(192,0,10,.3)}
+.obj-plan{color:var(--muted);border:1px solid #1a0808}
+.obj-text{font-size:.83rem;color:var(--text)}
+
+/* CREDENTIALS */
+.cred-grid{padding:.75rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.cred-item{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text);display:flex;align-items:center;gap:.4rem}
+.cred-check{color:#4caf50}
+.cred-pend{color:var(--red);font-size:.5rem}
+
+/* ASSOCIATIONS */
+.assoc-list{padding:.75rem 1rem;display:flex;flex-direction:column;gap:.4rem}
+.assoc-item{font-size:.83rem;color:var(--text);padding:.3rem 0;border-bottom:1px solid rgba(26,8,8,.4);display:flex;align-items:center;gap:.5rem}
+.assoc-item::before{content:'//';font-family:'Space Mono',monospace;font-size:.5rem;color:var(--red)}
+
+/* FOOTER STAMPS */
+.dossier-footer-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;margin-top:-.5rem}
+.dossier-stamp-sm{font-family:'Space Mono',monospace;font-size:.48rem;color:rgba(192,0,10,.3);letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(192,0,10,.1);padding:.15rem .5rem}
+
+/* MOBILE */
+@media(max-width:900px){
+  .dossier-layout{grid-template-columns:1fr}
+  .dossier-id-col{position:static;display:grid;grid-template-columns:150px 1fr;gap:1rem;align-items:start}
+  .dossier-photo{width:150px}
+}
+@media(max-width:600px){
+  .dossier-id-col{grid-template-columns:1fr}
+  .dossier-photo{width:100%;max-width:200px;margin:0 auto}
+  .cred-grid{grid-template-columns:1fr}
+  .sector-row{grid-template-columns:1fr}
+  .sector-tag{margin-bottom:.15rem}
+}
+
+/* ══ THREAT INTEL TICKER ══ */
+.threat-ticker{position:fixed;bottom:3px;left:0;right:0;z-index:400;height:22px;background:rgba(3,0,0,.95);border-top:1px solid rgba(192,0,10,.25);display:flex;align-items:center;overflow:hidden;pointer-events:none}
+.ticker-label{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--red);letter-spacing:.15em;text-transform:uppercase;padding:0 .75rem;background:rgba(192,0,10,.12);border-right:1px solid rgba(192,0,10,.25);height:100%;display:flex;align-items:center;flex-shrink:0;white-space:nowrap}
+.ticker-track{display:flex;align-items:center;gap:0;animation:ticker-scroll 60s linear infinite;white-space:nowrap;will-change:transform}
+.ticker-track:hover{animation-play-state:paused;pointer-events:all}
+@keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-family:'Space Mono',monospace;font-size:.5rem;color:rgba(192,0,10,.6);padding:0 1.5rem;letter-spacing:.06em;border-right:1px solid rgba(192,0,10,.1);white-space:nowrap}
+.ticker-item.severity-high{color:rgba(255,30,30,.75)}
+.ticker-item.severity-med{color:rgba(192,0,10,.55)}
+.ticker-item.ticker-dot{color:rgba(192,0,10,.3);padding:0 .5rem;border:none}
+
+/* ══ TERMINAL CURSOR ON HOME DECREE ══ */
+.home-decree::after{content:'_';color:var(--red);animation:cblink .8s step-end infinite;font-family:'Space Mono',monospace}
+
+/* ══ LOADING BAR ON PAGE TRANSITION ══ */
+.page-load-bar{position:fixed;top:0;left:0;height:1px;background:var(--red);z-index:950;width:0;box-shadow:0 0 8px var(--red);transition:width .3s ease}
+.page-load-bar.loading{animation:loadbar .4s ease forwards}
+@keyframes loadbar{0%{width:0}60%{width:85%}100%{width:100%}}
+
+/* ══ TYPING INDICATOR ON DOSSIER ══ */
+.dossier-file-date{position:relative}
+
+/* ══ GLITCH TEXT EFFECT on home name on hover ══ */
+.home-name-first{transition:text-shadow .1s}
+.home-name:hover .home-name-first{text-shadow:2px 0 rgba(255,0,0,.4),-2px 0 rgba(0,200,255,.2),0 0 20px rgba(192,0,10,.3)}
+
+/* ══ PROJECT CARD — WIP PULSE ══ */
+.badge-wip{animation:wip-pulse 3s ease-in-out infinite}
+@keyframes wip-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ══ SKILL CARD — KANJI FADE IN ══ */
+.skill-card:hover::after{color:rgba(192,0,10,.08);transition:color .4s}
+
+/* ══ EXPERIENCE — SPINE GROW ON REVEAL ══ */
+.exp-item.visible .exp-spine{animation:spine-grow .6s ease forwards}
+@keyframes spine-grow{from{height:0}to{height:100%}}
+
+/* ══ NAV ACTIVE INDICATOR ══ */
+.nav-btn.active{color:var(--red);text-shadow:0 0 12px rgba(192,0,10,.4)}
+
+/* ══ SMOOTH PAGE SCROLLBAR ══ */
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:rgba(192,0,10,.3);border-radius:2px}
+.page::-webkit-scrollbar-thumb:hover{background:var(--red)}
+
+/* ══ DOSSIER PHOTO — SCAN ANIMATION ══ */
+.photo-inner::after{content:'';position:absolute;top:-100%;left:0;right:0;height:30%;background:linear-gradient(180deg,transparent,rgba(192,0,10,.06),transparent);animation:photo-scan 4s ease-in-out infinite;pointer-events:none}
+@keyframes photo-scan{0%{top:-30%}100%{top:130%}}
+
+/* ══ HOME CURRENTLY STRIP — LIVE BLINK ══ */
+.dot-live{animation:dotpulse 1.5s ease-in-out infinite}
+
+/* ══ TICKER BOTTOM PADDING for pages ══ */
+.page{padding-bottom:28px}
+
+
+/* ══════════════════════════════════════
+   DEATH NOTE CONTACT PAGE
+══════════════════════════════════════ */
+#page-contact{overflow-y:auto}
+
+.dn-contact-wrap{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:5rem 1.5rem 4rem;
+  gap:1.25rem;
+  position:relative;
+  z-index:2;
+}
+
+/* kanji bg */
+.dn-kanji-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.dn-kanji-float{position:absolute;font-family:'Noto Serif JP',serif;font-weight:900;color:rgba(192,0,10,.045);user-select:none;animation:kfloat linear infinite}
+
+/* top labels */
+.dn-top-label{display:flex;gap:1.5rem;align-items:center}
+.dn-file-tag{font-family:'Space Mono',monospace;font-size:.55rem;color:rgba(192,0,10,.4);letter-spacing:.2em;text-transform:uppercase;border:1px solid rgba(192,0,10,.15);padding:.2rem .6rem}
+
+/* shinigami */
+.dn-shini{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.dn-shini-svg{width:130px;height:auto;filter:drop-shadow(0 0 18px rgba(192,0,10,.18));animation:shini-float 7s ease-in-out infinite}
+@keyframes shini-float{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-10px) rotate(.8deg)}}
+.dn-shini-kanji{font-family:'Noto Serif JP',serif;font-size:.65rem;color:rgba(192,0,10,.28);letter-spacing:.3em}
+
+/* intro text */
+.dn-intro{text-align:center;max-width:480px}
+.dn-intro-title{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--white);letter-spacing:.08em;margin-bottom:.5rem;text-shadow:0 0 30px rgba(192,0,10,.2)}
+.dn-intro-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.88rem;color:var(--text);line-height:1.9}
+
+/* notebook */
+.dn-notebook{
+  width:100%;
+  max-width:580px;
+  background:#060101;
+  border:1px solid #180606;
+  border-left:5px solid var(--red);
+  position:relative;
+  box-shadow:
+    0 0 50px rgba(192,0,10,.08),
+    0 25px 70px rgba(0,0,0,.85),
+    -3px 0 0 rgba(192,0,10,.35),
+    inset 1px 0 0 rgba(192,0,10,.05);
+  overflow:hidden;
+}
+.dn-nb-spine{position:absolute;left:5px;top:0;bottom:0;width:1px;background:rgba(192,0,10,.12);z-index:1}
+.dn-nb-lines{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 31px,rgba(192,0,10,.05) 31px,rgba(192,0,10,.05) 32px);pointer-events:none;z-index:0}
+.dn-nb-inner{padding:2rem 2rem 2rem 2.5rem;position:relative;z-index:1}
+
+/* notebook header */
+.dn-nb-header{text-align:center;margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(192,0,10,.15)}
+.dn-nb-title-en{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;color:var(--white);letter-spacing:.14em;text-shadow:0 0 25px rgba(192,0,10,.25)}
+.dn-nb-title-jp{font-family:'Noto Serif JP',serif;font-size:.75rem;color:rgba(192,0,10,.45);letter-spacing:.3em;margin-top:.2rem}
+.dn-nb-rule{width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:.7rem auto}
+.dn-nb-decree{font-family:'IM Fell English',serif;font-style:italic;font-size:.82rem;color:var(--text);line-height:1.85}
+
+/* form */
+.dn-form{display:flex;flex-direction:column;gap:1.1rem}
+.dn-field{display:flex;flex-direction:column;gap:.3rem}
+.dn-field-label{font-family:'Space Mono',monospace;font-size:.54rem;color:rgba(192,0,10,.5);letter-spacing:.16em;text-transform:uppercase}
+.dn-field-input,
+.dn-field-select,
+.dn-field-textarea{
+  width:100%;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid rgba(192,0,10,.18);
+  outline:none;
+  font-family:'IM Fell English',serif;
+  font-size:.95rem;
+  color:var(--white);
+  padding:.45rem 0;
+  letter-spacing:.03em;
+  transition:border-color .3s;
+  resize:none;
+}
+.dn-field-input:focus,
+.dn-field-select:focus,
+.dn-field-textarea:focus{border-color:rgba(192,0,10,.55)}
+.dn-field-input::placeholder,
+.dn-field-textarea::placeholder{color:rgba(192,0,10,.18);font-style:italic}
+.dn-field-select{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text);cursor:crosshair}
+.dn-field-select option{background:#060101;color:var(--text);font-family:'Space Mono',monospace}
+.dn-select-wrap{position:relative}
+.dn-field-textarea{min-height:100px;line-height:2;padding-top:.5rem}
+
+/* error */
+.dn-error{font-family:'Space Mono',monospace;font-size:.6rem;color:rgba(255,80,80,.65);letter-spacing:.08em;min-height:1rem;transition:opacity .3s}
+
+/* submit */
+.dn-submit-area{display:flex;flex-direction:column;gap:.5rem;padding-top:.5rem}
+.dn-submit-btn{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  font-family:'Cinzel',serif;
+  font-size:.78rem;
+  letter-spacing:.18em;
+  padding:.75rem 1.75rem;
+  background:transparent;
+  border:1px solid var(--red);
+  color:var(--red);
+  cursor:crosshair;
+  transition:all .35s;
+  position:relative;
+  overflow:hidden;
+  align-self:flex-start;
+}
+.dn-submit-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--red);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .35s ease;
+  z-index:0;
+}
+.dn-submit-btn:hover::before{transform:scaleX(1)}
+.dn-submit-btn:hover{color:var(--white);box-shadow:0 0 25px rgba(192,0,10,.35)}
+.dn-submit-btn *{position:relative;z-index:1}
+.dn-submit-btn:disabled{opacity:.4;pointer-events:none}
+.dn-submit-icon{font-size:1rem}
+.dn-submit-warning{font-family:'IM Fell English',serif;font-style:italic;font-size:.72rem;color:rgba(192,0,10,.22);letter-spacing:.04em}
+
+/* success */
+.dn-success{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:1rem;
+  text-align:center;
+  padding:2rem;
+  max-width:400px;
+}
+.dn-success.show{display:flex}
+.dn-success-eye{width:60px;height:60px;filter:drop-shadow(0 0 12px rgba(192,0,10,.4));animation:shini-float 4s ease-in-out infinite}
+.dn-success-title{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--white);letter-spacing:.08em}
+.dn-success-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.88rem;color:var(--text);line-height:1.9}
+
+/* mobile */
+@media(max-width:600px){
+  .dn-shini-svg{width:95px}
+  .dn-nb-inner{padding:1.5rem 1.25rem 1.5rem 1.75rem}
+  .dn-nb-title-en{font-size:1.1rem}
+  .dn-intro-title{font-size:1.1rem}
+  .dn-top-label{flex-direction:column;gap:.5rem}
+}
+
+/* ══════════════════════════════════════
+   DEATH NOTE CONTACT PAGE — dn-* styles
+══════════════════════════════════════ */
+#page-contact{overflow-y:auto;overflow-x:hidden}
+.dn-contact-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:5.5rem 1.5rem 4rem;position:relative;gap:1.25rem;z-index:2}
+
+/* kanji bg */
+.dn-kanji-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.dn-kanji-float{position:absolute;font-family:'Noto Serif JP',serif;font-weight:900;color:rgba(192,0,10,.04);user-select:none;animation:kfloat linear infinite}
+
+/* top label */
+.dn-top-label{display:flex;gap:1rem;align-items:center;z-index:2}
+.dn-file-tag{font-family:'Space Mono',monospace;font-size:.55rem;color:rgba(192,0,10,.4);letter-spacing:.2em;text-transform:uppercase;border:1px solid rgba(192,0,10,.15);padding:.2rem .6rem}
+
+/* shinigami */
+.dn-shini{display:flex;flex-direction:column;align-items:center;gap:.3rem;z-index:2}
+.dn-shini-svg{width:140px;height:auto;filter:drop-shadow(0 0 18px rgba(192,0,10,.18));animation:shini-float 6s ease-in-out infinite}
+@keyframes shini-float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+.dn-shini-kanji{font-family:'Noto Serif JP',serif;font-size:.7rem;color:rgba(192,0,10,.25);letter-spacing:.3em}
+
+/* intro */
+.dn-intro{text-align:center;max-width:500px;z-index:2}
+.dn-intro-title{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;color:var(--white);letter-spacing:.08em;margin-bottom:.5rem}
+.dn-intro-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.88rem;color:var(--text);line-height:1.9}
+
+/* notebook */
+.dn-notebook{width:100%;max-width:560px;background:linear-gradient(160deg,#0d0404,#080202);border:1px solid #1a0808;border-left:5px solid var(--red);position:relative;z-index:2;box-shadow:0 0 60px rgba(192,0,10,.1),0 30px 80px rgba(0,0,0,.8);overflow:hidden}
+.dn-notebook::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 32px,rgba(192,0,10,.04) 32px,rgba(192,0,10,.04) 33px);pointer-events:none;z-index:0}
+.dn-nb-spine{position:absolute;left:5px;top:0;bottom:0;width:1px;background:rgba(192,0,10,.15);z-index:1}
+.dn-nb-lines{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0}
+.dn-nb-inner{padding:2rem 2rem 1.75rem 2.5rem;position:relative;z-index:1}
+
+/* notebook header */
+.dn-nb-header{text-align:center;margin-bottom:1.5rem}
+.dn-nb-title-en{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;color:var(--white);letter-spacing:.12em;text-shadow:0 0 30px rgba(192,0,10,.3)}
+.dn-nb-title-jp{font-family:'Noto Serif JP',serif;font-size:.75rem;color:rgba(192,0,10,.45);letter-spacing:.3em;margin-top:.2rem}
+.dn-nb-rule{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:.75rem auto}
+.dn-nb-decree{font-family:'IM Fell English',serif;font-style:italic;font-size:.82rem;color:var(--text);line-height:1.8}
+
+/* form */
+.dn-form{display:flex;flex-direction:column;gap:.9rem}
+.dn-field{display:flex;flex-direction:column;gap:.2rem}
+.dn-field-label{font-family:'Space Mono',monospace;font-size:.52rem;color:rgba(192,0,10,.5);letter-spacing:.15em;text-transform:uppercase}
+.dn-field-input,.dn-field-select,.dn-field-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(192,0,10,.2);outline:none;font-family:'IM Fell English',serif;font-size:.95rem;color:var(--white);padding:.4rem 0;letter-spacing:.03em;resize:none;transition:border-color .3s}
+.dn-field-input:focus,.dn-field-textarea:focus,.dn-field-select:focus{border-color:rgba(192,0,10,.6)}
+.dn-field-input::placeholder,.dn-field-textarea::placeholder{color:rgba(192,0,10,.2);font-style:italic}
+.dn-field-select{cursor:crosshair;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text)}
+.dn-field-select option{background:#0a0303;color:var(--text)}
+.dn-field-textarea{min-height:90px;line-height:2}
+.dn-select-wrap{border-bottom:1px solid rgba(192,0,10,.2);transition:border-color .3s}
+.dn-select-wrap:focus-within{border-color:rgba(192,0,10,.6)}
+.dn-field-select{border:none}
+
+/* error */
+.dn-error{font-family:'Space Mono',monospace;font-size:.6rem;color:rgba(255,80,80,.7);letter-spacing:.1em;min-height:1.2rem}
+
+/* submit */
+.dn-submit-area{display:flex;flex-direction:column;gap:.4rem;margin-top:.25rem}
+.dn-submit-btn{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.15em;padding:.7rem 1.5rem;background:transparent;border:1px solid var(--red);color:var(--red);cursor:crosshair;transition:all .35s;position:relative;overflow:hidden;display:flex;align-items:center;gap:.5rem;align-self:flex-start}
+.dn-submit-btn::before{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s ease;z-index:0}
+.dn-submit-btn:hover::before{transform:scaleX(1)}
+.dn-submit-btn:hover{color:var(--white);box-shadow:0 0 30px rgba(192,0,10,.4)}
+.dn-submit-btn:hover .dn-submit-icon,.dn-submit-btn:hover #dn-submit-label{color:var(--white)}
+.dn-submit-icon,#dn-submit-label{position:relative;z-index:1}
+.dn-submit-warning{font-family:'IM Fell English',serif;font-style:italic;font-size:.7rem;color:rgba(192,0,10,.22);letter-spacing:.04em}
+
+/* success state */
+.dn-success{display:none;flex-direction:column;align-items:center;gap:1rem;text-align:center;padding:2rem;z-index:2;max-width:400px}
+.dn-success.show{display:flex}
+.dn-success-eye{width:60px;height:60px;animation:shini-float 3s ease-in-out infinite}
+.dn-success-title{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--white);letter-spacing:.06em}
+.dn-success-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.88rem;color:var(--text);line-height:1.8}
+
+/* mobile */
+@media(max-width:600px){
+  .dn-shini-svg{width:100px}
+  .dn-nb-inner{padding:1.5rem 1.25rem 1.25rem 1.75rem}
+  .dn-nb-title-en{font-size:1.1rem}
+  .dn-intro-title{font-size:1.1rem}
+}
+
+/* ══ CONTACT PAGE ══ */
+.contact-layout{display:grid;grid-template-columns:1.2fr 0.8fr;gap:3rem;align-items:start}
+.contact-intro{font-size:.9rem;color:var(--text);line-height:1.9;margin-bottom:1.75rem}
+.contact-field-group{display:flex;flex-direction:column;gap:1.1rem}
+.contact-field{display:flex;flex-direction:column;gap:.25rem}
+.contact-label{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--red);letter-spacing:.18em;text-transform:uppercase}
+.contact-input{background:rgba(10,5,5,.8);border:1px solid var(--border);border-bottom:1px solid rgba(192,0,10,.25);outline:none;font-family:'IM Fell English',serif;font-size:.92rem;color:var(--white);padding:.6rem .75rem;transition:border-color .3s;width:100%}
+.contact-input:focus{border-color:rgba(192,0,10,.5);background:rgba(12,5,5,.9)}
+.contact-input::placeholder{color:var(--muted);font-style:italic}
+.contact-select{cursor:crosshair;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text)}
+.contact-select option{background:#0a0303}
+.contact-textarea{resize:vertical;min-height:120px;line-height:1.8}
+.contact-error{font-family:'Space Mono',monospace;font-size:.6rem;color:rgba(255,80,80,.7);letter-spacing:.08em;min-height:1.2rem;margin-top:.5rem}
+.contact-submit{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.15em;padding:.75rem 1.75rem;background:transparent;border:1px solid var(--red);color:var(--red);cursor:crosshair;transition:all .35s;margin-top:1rem;position:relative;overflow:hidden}
+.contact-submit::before{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s;z-index:0}
+.contact-submit:hover::before{transform:scaleX(1)}
+.contact-submit:hover{color:var(--white);box-shadow:0 0 24px var(--red-glow)}
+.contact-submit span{position:relative;z-index:1}
+.contact-success{display:none;font-family:'Space Mono',monospace;font-size:.62rem;color:rgba(100,200,100,.7);letter-spacing:.08em;line-height:1.8;margin-top:1rem;padding:.75rem;border:1px solid rgba(100,200,100,.2);background:rgba(0,30,0,.15)}
+.contact-success.show{display:block}
+.contact-success a{color:var(--red)}
+.contact-success-icon{color:rgba(100,200,100,.8);margin-right:.4rem}
+.contact-info-col{display:flex;flex-direction:column;gap:1.25rem;position:sticky;top:7rem}
+.contact-info-card{background:rgba(10,5,5,.9);border:1px solid var(--border);padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.contact-info-label{font-family:'Space Mono',monospace;font-size:.57rem;color:var(--red);letter-spacing:.2em;text-transform:uppercase;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.contact-info-row{display:flex;flex-direction:column;gap:.15rem}
+.contact-info-key{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.contact-info-val{font-size:.85rem;color:var(--text)}
+.contact-info-val a,.contact-info-val{text-decoration:none;transition:color .2s}
+a.contact-info-val:hover{color:var(--red)}
+.contact-avail-row{display:flex;align-items:center;gap:.6rem}
+.avail-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);flex-shrink:0;animation:dotpulse 2s infinite}
+@media(max-width:900px){.contact-layout{grid-template-columns:1fr;gap:2rem}.contact-info-col{position:static}}
 </style>
 </head>
 <body>
 
 <div class="scroll-progress-bar" id="progress-bar"></div>
 <canvas id="bg-canvas"></canvas>
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="blood-pool"></div>
+<div class="corner-sigil corner-tl">&#x6B7B;&#x4EA1;<br/>&#x30CE;&#x30FC;&#x30C8;</div>
+<div class="corner-sigil corner-tr">&#x6280;&#x8853;<br/>&#x5B88;&#x8B77;</div>
+<div class="corner-sigil corner-bl">&#x8D64;&#x3044;<br/>&#x7CF8;</div>
+<div class="corner-sigil corner-br">&#x8840;&#x6D17;<br/>&#x308C;&#x306A;&#x3044;</div>
 <div class="page-wipe" id="page-wipe"></div>
 <div class="drip-bar" id="drip-bar"></div>
 
@@ -318,6 +844,7 @@ nav.show{transform:translateY(0)}
     <li><button class="nav-btn" onclick="goPage('experience')" data-page="experience">Experience</button></li>
     <li><button class="nav-btn" onclick="goPage('skills')" data-page="skills">Skills</button></li>
     <li><button class="nav-btn" onclick="goPage('projects')" data-page="projects">Projects</button></li>
+    <li><button class="nav-btn" onclick="goPage('contact')" data-page="contact">Contact</button></li>
   </ul>
   <button class="nav-hamburger" id="nav-ham" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
   <div class="nav-kanji">&#x6B7B;&nbsp;&#xB7;&nbsp;&#x8D64;&nbsp;&#xB7;&nbsp;&#x7D2B;</div>
@@ -330,6 +857,7 @@ nav.show{transform:translateY(0)}
   <button class="nav-mobile-btn" onclick="goPage('experience');closeMobileNav()">Experience</button>
   <button class="nav-mobile-btn" onclick="goPage('skills');closeMobileNav()">Skills</button>
   <button class="nav-mobile-btn" onclick="goPage('projects');closeMobileNav()">Projects</button>
+  <button class="nav-mobile-btn" onclick="goPage('contact');closeMobileNav()">Contact</button>
 </div>
 
 <!-- HOME PAGE -->
@@ -365,6 +893,7 @@ nav.show{transform:translateY(0)}
       <div class="nav-card" onclick="goPage('experience')"><span class="nc-kanji">&#x7D4C;</span>Experience</div>
       <div class="nav-card" onclick="goPage('skills')"><span class="nc-kanji">&#x6280;</span>Skills</div>
       <div class="nav-card" onclick="goPage('projects')"><span class="nc-kanji">&#x6848;</span>Projects</div>
+          <div class="nav-card" onclick="goPage('contact')"><span class="nc-kanji">&#x6B7B;</span>Contact</div>
     </div>
     <div class="scroll-cue"><span>Explore</span><div class="scroll-line"></div></div>
   </div>
@@ -373,64 +902,199 @@ nav.show{transform:translateY(0)}
 <!-- ABOUT PAGE -->
 <div class="page" id="page-about">
   <div class="sec-page">
-    <div class="sec-header reveal">
-      <div class="sec-kanji">&#x81EA;</div>
-      <div><div class="sec-label">// about</div><div class="sec-title">About Me</div></div>
-    </div>
-    <div class="about-grid">
-      <div class="about-text">
 
-        <p class="reveal">I'm <strong>Kiarah Pettaway</strong> — Kay. I work in security operations and identity governance. Day to day, that means triaging incidents, managing access at enterprise scale, monitoring infrastructure in real time, and making sure the right people have the right access — and the wrong people don't.</p>
-
-        <p class="reveal">I've operated in environments most people only read about. I've authenticated into <span class="red">Federal Reserve infrastructure</span> to process ACH transactions. I've run live SIEM dashboards overnight monitoring 300+ financial institutions while the rest of the world slept. I've led IAM and access control reviews under ISO 27001 and FedRAMP frameworks. I've built Python automation that replaced hours of manual work. Right now I'm triaging <strong>30+ incidents daily</strong> with a <strong>96% SLA resolution rate</strong> across identity platforms, mainframes, POS systems, and military access environments.</p>
-
-        <p class="reveal">I hold CompTIA <strong>CySA+, SSCP, Security+, Network+, A+</strong>, and <strong>ITIL</strong> — and I earned a <span class="red">WGU Systems Thinking Award</span> in 2024 for applied systems modeling. I finished my B.S. in Cybersecurity &amp; Information Assurance at WGU in 2026.</p>
-
-        <div class="scroll-quote reveal">"I know what the attack looks like in logs. Now I'm learning to be the one making them."</div>
-
-        <p class="reveal">Here's where I'm headed. I'm building toward offensive security — not to leave defense behind, but to make my defense sharper. PenTest+ is next on the cert track. A Raspberry Pi honeypot is live on my network collecting real attacker behavior right now. I'm writing IAM automation tooling in Python. I'm building IR playbooks from scratch. I'm planning my M.S. in Cybersecurity. I want to attend security conferences, contribute to the community, and keep stacking real skills — not just credentials.</p>
-
-        <p class="reveal">The goal is simple: be the person who can defend a network, think like the one trying to break in, and build the detections that catch them both. <span class="red">That's the purple team loop</span> — and I'm building it deliberately.</p>
-
-        <div class="purple-banner reveal">
-          <div class="purple-label">&#x2694; Purple Team Mindset</div>
-          <div class="purple-text"><strong>Red informs blue. Blue sharpens red.</strong> Every exploit I study becomes a detection rule. Every detection rule reveals a new evasion path to study. I spent real time in live SIEM dashboards during peak attack windows. Now I'm studying the other side of that equation — and bringing everything back to defense.</div>
-        </div>
-
-        <div class="affiliations reveal">
-          <h4>// Community</h4>
-          <div class="affil-item">WGU Cyber Club — Active Member</div>
-          <div class="affil-item">Women in CyberSecurity (WiCyS) — Member &amp; Community Moderator</div>
-          <div class="affil-item">Women in Technology (WIT) — Member</div>
-        </div>
-      </div>
-      <div class="reveal">
-        <div class="contact-card">
-          <h3>Get in Touch</h3>
-          <div class="c-rule"></div>
-          <div class="c-row"><div class="c-label">Current Role</div><div class="c-val">IT Operations &amp; Security Analyst<br/>SpartanNash &nbsp;&#xB7;&nbsp; Byron Center, MI</div></div>
-          <div class="c-row"><div class="c-label">Education</div><div class="c-val">B.S. Cybersecurity &amp; IA — WGU<br/><span style="color:var(--red)">M.S. Cybersecurity — Planned</span></div></div>
-          <div class="c-row"><div class="c-label">Focus</div><div class="c-val">IAM &nbsp;&#xB7;&nbsp; SecOps &nbsp;&#xB7;&nbsp; Red Team &nbsp;&#xB7;&nbsp; Purple Team</div></div>
-          <div class="c-rule"></div>
-          <div class="c-row"><div class="c-label">GitHub</div><div class="c-val"><a href="https://github.com/l8zydaz" target="_blank">github.com/l8zydaz</a></div></div>
-          <div class="c-row"><div class="c-label">LinkedIn</div><div class="c-val"><a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank">linkedin.com/in/kiarah-pettaway</a></div></div>
-          <div class="c-row"><div class="c-label">Email</div><div class="c-val"><a href="mailto:kiarahp@protonmail.com">kiarahp@protonmail.com</a></div></div>
-          <div class="c-rule"></div>
-          <a href="mailto:kiarahp@protonmail.com" class="btn-contact">Write in the notebook &#x2192;</a>
-        </div>
+    <!-- DOSSIER HEADER -->
+    <div class="dossier-header reveal">
+      <div class="dossier-stamp dossier-stamp-top">CLASSIFIED // SECURITY CLEARANCE REQUIRED</div>
+      <div class="dossier-file-label">
+        <span class="dossier-file-id">FILE // KP-IAM-001</span>
+        <span class="dossier-file-date">DATE ACCESSED: <span id="dossier-date"></span></span>
       </div>
     </div>
+
+    <!-- MAIN DOSSIER LAYOUT -->
+    <div class="dossier-layout reveal">
+
+      <!-- LEFT: PHOTO + ID BLOCK -->
+      <div class="dossier-id-col">
+
+        <!-- PHOTO PLACEHOLDER -->
+        <div class="dossier-photo">
+          <div class="photo-inner">
+            <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" class="silhouette-svg">
+              <rect width="120" height="140" fill="#0a0303"/>
+              <!-- body -->
+              <ellipse cx="60" cy="105" rx="38" ry="28" fill="#0f0505"/>
+              <!-- head -->
+              <circle cx="60" cy="52" r="26" fill="#0f0505"/>
+              <!-- neck -->
+              <rect x="50" y="74" width="20" height="14" fill="#0f0505"/>
+              <!-- scan lines over photo -->
+              <line x1="0" y1="20" x2="120" y2="20" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <line x1="0" y1="40" x2="120" y2="40" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <line x1="0" y1="60" x2="120" y2="60" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <line x1="0" y1="80" x2="120" y2="80" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <line x1="0" y1="100" x2="120" y2="100" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <line x1="0" y1="120" x2="120" y2="120" stroke="rgba(192,0,10,0.06)" stroke-width="1"/>
+              <!-- crosshair -->
+              <line x1="55" y1="52" x2="65" y2="52" stroke="rgba(192,0,10,0.3)" stroke-width="0.5"/>
+              <line x1="60" y1="47" x2="60" y2="57" stroke="rgba(192,0,10,0.3)" stroke-width="0.5"/>
+              <circle cx="60" cy="52" r="8" fill="none" stroke="rgba(192,0,10,0.2)" stroke-width="0.5"/>
+            </svg>
+            <div class="photo-redacted">PHOTO<br/>REDACTED</div>
+          </div>
+          <div class="photo-id-num">ID: 7741-KP</div>
+        </div>
+
+        <!-- ID FIELDS -->
+        <div class="id-fields">
+          <div class="id-field">
+            <div class="id-field-label">SUBJECT</div>
+            <div class="id-field-value">PETTAWAY, KIARAH (KAY)</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">ALIAS</div>
+            <div class="id-field-value">KIRA &nbsp;/&nbsp; KASAI &nbsp;/&nbsp; KISEKI</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">CLASSIFICATION</div>
+            <div class="id-field-value red-field">IAM &amp; SECURITY OPS</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">STATUS</div>
+            <div class="id-field-value"><span class="status-dot-live"></span> ACTIVE</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">LOCATION</div>
+            <div class="id-field-value">GRAND RAPIDS, MI</div>
+          </div>
+          <div class="id-field">
+            <div class="id-field-label">CLEARANCE</div>
+            <div class="id-field-value red-field">FEDRAMP &nbsp;/&nbsp; FFIEC</div>
+          </div>
+        </div>
+
+        <!-- CONTACT LINKS -->
+        <div class="dossier-links">
+          <a href="https://github.com/l8zydaz" target="_blank" class="dossier-link">&#x2197; github.com/l8zydaz</a>
+          <a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank" class="dossier-link">&#x2197; linkedin.com/in/kiarah-pettaway</a>
+          <a href="mailto:kiarahp@protonmail.com" class="dossier-link">&#x2197; kiarahp@protonmail.com</a>
+          <a href="resume.pdf" download class="dossier-link dossier-link-dl">&#x2193; download resume.pdf</a>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: FILE CONTENT -->
+      <div class="dossier-file-col">
+
+        <!-- SECTOR EXPOSURE -->
+        <div class="file-section">
+          <div class="file-section-header">
+            <span class="file-section-num">01</span>
+            <span class="file-section-title">SECTOR EXPOSURE</span>
+          </div>
+          <div class="sector-rows">
+            <div class="sector-row">
+              <span class="sector-tag">FINANCE</span>
+              <span class="sector-desc">Federal Reserve infrastructure, ACH processing, 300+ credit unions, PGP-encrypted vendor transmissions, FFIEC &amp; NCUA compliance — CU*Answers</span>
+            </div>
+            <div class="sector-row">
+              <span class="sector-tag">SAAS</span>
+              <span class="sector-desc">ISO 27001 &amp; FedRAMP audit readiness, IAM access reviews, vendor security assessments, telemetry pipeline — Bindplane</span>
+            </div>
+            <div class="sector-row">
+              <span class="sector-tag">SUPPLY CHAIN</span>
+              <span class="sector-desc">Enterprise identity governance across corporate, retail, warehouse, and military environments — SpartanNash</span>
+            </div>
+            <div class="sector-row">
+              <span class="sector-tag">REAL ESTATE</span>
+              <span class="sector-desc">Founded Killiunaire — ARV analysis, comparable sales modeling, and material cost assessments for investor-builders across 15+ closings</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="file-section">
+          <div class="file-section-header">
+            <span class="file-section-num">02</span>
+            <span class="file-section-title">SUBJECT PROFILE</span>
+          </div>
+          <p class="file-body">IAM and security operations professional operating across <strong>Finance, SaaS, Supply Chain,</strong> and <strong>Real Estate</strong>. Day to day: triaging incidents, managing access at enterprise scale, monitoring infrastructure in real time, and making sure the right people have the right access — and the wrong people don't.</p>
+          <p class="file-body">Authenticated into <span class="red-text">Federal Reserve infrastructure</span> using a FED token and multi-factor passphrase to process ACH transactions across hundreds of credit unions. Ran live SIEM dashboards overnight monitoring $50M+ in daily financial operations. Led IAM and access control reviews under ISO 27001 and FedRAMP. Built Python automation that eliminated hours of manual work. Currently triaging <strong>30+ incidents daily</strong> with a <strong>96% SLA resolution rate</strong>.</p>
+          <p class="file-body">Before security: founded <strong>Killiunaire</strong>, a real estate venture scaled across 15+ property closings. Conducted financial and risk assessments on 100+ properties — ARV analysis, comparable sales, and actual material cost modeling for investor-builders. Applied risk management. Same discipline, different domain.</p>
+        </div>
+
+        <!-- OBJECTIVE -->
+        <div class="file-section">
+          <div class="file-section-header">
+            <span class="file-section-num">03</span>
+            <span class="file-section-title">KNOWN OBJECTIVES</span>
+          </div>
+          <div class="objective-list">
+            <div class="objective-item"><span class="obj-status obj-active">ACTIVE</span><span class="obj-text">PenTest+ certification</span></div>
+            <div class="objective-item"><span class="obj-status obj-active">ACTIVE</span><span class="obj-text">IAM Access Review Automation tool (Python + Graph API)</span></div>
+            <div class="objective-item"><span class="obj-status obj-active">ACTIVE</span><span class="obj-text">Raspberry Pi 2W honeypot — live, logging real attacker behavior</span></div>
+            <div class="objective-item"><span class="obj-status obj-active">ACTIVE</span><span class="obj-text">Incident Response Playbook Library (NIST 800-61)</span></div>
+            <div class="objective-item"><span class="obj-status obj-plan">PLANNED</span><span class="obj-text">M.S. Cybersecurity — WGU</span></div>
+            <div class="objective-item"><span class="obj-status obj-plan">PLANNED</span><span class="obj-text">Security conferences + CTF participation</span></div>
+          </div>
+        </div>
+
+        <!-- CERTIFICATIONS -->
+        <div class="file-section">
+          <div class="file-section-header">
+            <span class="file-section-num">04</span>
+            <span class="file-section-title">VERIFIED CREDENTIALS</span>
+          </div>
+          <div class="cred-grid">
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> CySA+</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> SSCP (Associate ISC&#xB2;)</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> Security+</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> Network+</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> A+</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> ITIL</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> Google IT Support</div>
+            <div class="cred-item"><span class="cred-pend">&#x25CF;</span> PenTest+ (pending)</div>
+            <div class="cred-item"><span class="cred-check">&#x2713;</span> B.S. Cybersecurity &amp; IA — WGU</div>
+          </div>
+        </div>
+
+        <!-- AFFILIATIONS -->
+        <div class="file-section">
+          <div class="file-section-header">
+            <span class="file-section-num">05</span>
+            <span class="file-section-title">KNOWN ASSOCIATIONS</span>
+          </div>
+          <div class="assoc-list">
+            <div class="assoc-item">WGU Cyber Club — Active Member</div>
+            <div class="assoc-item">Women in CyberSecurity (WiCyS) — Member &amp; Community Moderator</div>
+            <div class="assoc-item">Women in Technology (WIT) — Member</div>
+          </div>
+        </div>
+
+        <!-- FOOTER STAMP -->
+        <div class="dossier-footer-row">
+          <span class="dossier-stamp-sm">PURPLE TEAM OPERATOR</span>
+          <span class="dossier-stamp-sm">RED INFORMS BLUE</span>
+          <span class="dossier-stamp-sm">THREAT HUNTER IN TRAINING</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dossier-stamp dossier-stamp-bot reveal">END OF FILE // UNAUTHORIZED ACCESS WILL BE DETECTED</div>
+
   </div>
 </div>
 
-<!-- EXPERIENCE PAGE -->
 <div class="page" id="page-experience">
   <div class="sec-page">
     <div class="sec-header reveal">
       <div class="sec-kanji">&#x7D4C;</div>
       <div><div class="sec-label">// work history</div><div class="sec-title">Experience</div></div>
     </div>
-    <div class="case-file-label">CASE FILE &nbsp;&#xB7;&nbsp; <span>VERIFIED EMPLOYMENT RECORD</span> &nbsp;&#xB7;&nbsp; 3 ENTRIES</div>
+    <div class="exp-classified">TOP SECRET // VERIFIED</div>
+    <div class="case-file-label">CASE FILE &nbsp;&#xB7;&nbsp; <span>VERIFIED EMPLOYMENT RECORD</span> &nbsp;&#xB7;&nbsp; 4 ENTRIES</div>
 
     <div class="exp-item reveal">
       <div class="exp-spine"></div>
@@ -438,6 +1102,12 @@ nav.show{transform:translateY(0)}
         <div class="exp-role">IT Operations &amp; Security Analyst</div>
         <div class="exp-company">SpartanNash &nbsp;&#xB7;&nbsp; Byron Center, MI</div>
         <div class="exp-date">October 2025 — Present</div>
+        <div class="exp-stat-row">
+          <span class="exp-stat">96% SLA</span>
+          <span class="exp-stat">30+ incidents/day</span>
+          <span class="exp-stat">Enterprise IAM</span>
+          <span class="exp-stat">Military Access</span>
+        </div>
         <ul class="exp-list">
           <li>Resolved complex technical issues across identity platforms, mainframe systems, POS infrastructure, and military access systems — independent judgment to troubleshoot or escalate</li>
           <li>Supported thousands of users across corporate, retail, warehouse, and military environments — authenticating and managing access across segments with varying compliance requirements</li>
@@ -480,6 +1150,27 @@ nav.show{transform:translateY(0)}
         </ul>
       </div>
     </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-spine"></div>
+      <div>
+        <div class="exp-role">Chief Executive Officer</div>
+        <div class="exp-company">Killiunaire &nbsp;&#xB7;&nbsp; Remote</div>
+        <div class="exp-date">January 2021 — April 2024</div>
+        <div class="exp-stat-row">
+          <span class="exp-stat">15+ closings</span>
+          <span class="exp-stat">100+ properties assessed</span>
+          <span class="exp-stat">ARV analysis</span>
+          <span class="exp-stat">20% efficiency gain</span>
+        </div>
+        <ul class="exp-list">
+          <li>Founded and scaled a real estate venture across 15+ property closings — conducting financial and risk assessments on 100+ properties to identify high-yield opportunities and inform strategic growth decisions</li>
+          <li>Performed ARV analysis, pulled comparable sales, and modeled actual material costs for investor-builders — providing data-driven risk assessments that informed acquisition and build decisions</li>
+          <li>Integrated CRM systems and analytics tools to centralize operational data and automate workflows — improving overall operational efficiency by 20% across team operations and transaction management</li>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -625,70 +1316,254 @@ nav.show{transform:translateY(0)}
   </div>
 </div>
 
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="sec-page">
+
+    <div class="sec-header reveal">
+      <div class="sec-kanji">&#x6587;</div>
+      <div>
+        <div class="sec-label">// contact</div>
+        <div class="sec-title">Get in Touch</div>
+      </div>
+    </div>
+
+    <div class="contact-layout reveal">
+
+      <!-- LEFT: FORM -->
+      <div class="contact-form-col">
+        <p class="contact-intro">Whether you have an opportunity, want to connect professionally, or are interested in collaborating — fill out the form below. Your message will reach me directly.</p>
+
+        <div class="contact-field-group">
+          <div class="contact-field">
+            <label class="contact-label">// your name</label>
+            <input type="text" id="cf-name" class="contact-input" placeholder="Full name..." autocomplete="off"/>
+          </div>
+          <div class="contact-field">
+            <label class="contact-label">// your email</label>
+            <input type="email" id="cf-email" class="contact-input" placeholder="your@email.com" autocomplete="off"/>
+          </div>
+          <div class="contact-field">
+            <label class="contact-label">// company or organization</label>
+            <input type="text" id="cf-company" class="contact-input" placeholder="Optional..." autocomplete="off"/>
+          </div>
+          <div class="contact-field">
+            <label class="contact-label">// reason for contact</label>
+            <select id="cf-reason" class="contact-input contact-select">
+              <option value="">Select a reason...</option>
+              <option value="Job Opportunity">Job Opportunity</option>
+              <option value="Professional Connection">Professional Connection</option>
+              <option value="Collaboration">Collaboration</option>
+              <option value="Networking">Networking</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="contact-field">
+            <label class="contact-label">// message</label>
+            <textarea id="cf-message" class="contact-input contact-textarea" placeholder="Your message..." rows="5"></textarea>
+          </div>
+        </div>
+
+        <div class="contact-error" id="cf-error"></div>
+
+        <button class="contact-submit" id="cf-submit" onclick="submitContact()">
+          <span id="cf-submit-label">&#x2192; Send Message</span>
+        </button>
+
+        <div class="contact-success" id="cf-success">
+          <span class="contact-success-icon">&#x2713;</span>
+          Message sent. Your email client should have opened — if not, reach me directly at <a href="mailto:kiarahp@protonmail.com">kiarahp@protonmail.com</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: INFO -->
+      <div class="contact-info-col">
+        <div class="contact-info-card">
+          <div class="contact-info-label">// direct contact</div>
+          <div class="contact-info-row">
+            <span class="contact-info-key">Email</span>
+            <a href="mailto:kiarahp@protonmail.com" class="contact-info-val">kiarahp@protonmail.com</a>
+          </div>
+          <div class="contact-info-row">
+            <span class="contact-info-key">LinkedIn</span>
+            <a href="https://www.linkedin.com/in/kiarah-pettaway/" target="_blank" class="contact-info-val">linkedin.com/in/kiarah-pettaway</a>
+          </div>
+          <div class="contact-info-row">
+            <span class="contact-info-key">GitHub</span>
+            <a href="https://github.com/l8zydaz" target="_blank" class="contact-info-val">github.com/l8zydaz</a>
+          </div>
+        </div>
+
+        <div class="contact-info-card">
+          <div class="contact-info-label">// availability</div>
+          <div class="contact-avail-row">
+            <span class="avail-dot"></span>
+            <span class="contact-info-val">Open to new opportunities</span>
+          </div>
+          <div class="contact-avail-row">
+            <span class="avail-dot"></span>
+            <span class="contact-info-val">Remote &amp; Relocation considered</span>
+          </div>
+          <div class="contact-avail-row">
+            <span class="avail-dot"></span>
+            <span class="contact-info-val">IAM &middot; SecOps &middot; Purple Team</span>
+          </div>
+        </div>
+
+        <a href="resume.pdf" download class="btn-resume" style="display:block;text-align:center;">&#x2193; Download Resume</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- THREAT INTEL TICKER -->
+<div class="threat-ticker" id="threat-ticker">
+  <div class="ticker-label">&#x26A1; THREAT INTEL</div>
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<!-- PAGE LOAD BAR -->
+<div class="page-load-bar" id="page-load-bar"></div>
 
 <script>
 // ══════════════════════════════════════════
 // PROJECT DATA
 // ══════════════════════════════════════════
 var projectData=[
-  {title:'Security Monitoring & Detection Program',context:'WGU IT Capstone C769 - Ablique Game Studios',desc:'Designed and deployed a centralized SIEM for a simulated 18-person game studio using Microsoft Sentinel. End-to-end log ingestion, detection rules for brute-force, privilege escalation, and abnormal auth patterns, validated through controlled attack simulations. Alerts fired consistently. False positives: minimal.',chips:['Microsoft Sentinel','Azure','KQL','MITRE ATT&CK','NIST 800-137'],links:[{icon:'&#x2197;',label:'GitHub Repo',url:'https://github.com/l8zydaz/l8zydaz.github.io'},{icon:'&#x1F4C4;',label:'Capstone Proposal',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-proposal.md'},{icon:'&#x1F4CB;',label:'Implementation Report',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-report.md'}]},
-  {title:'Digital Forensics Investigation',context:'WGU D431 - digital-forensics-d431',desc:'Mock cybercrime investigations using Autopsy and FTK Imager. Evidence acquisition, file system analysis, data recovery from compromised machines. Formal forensic reports with documented chain of custody mirroring real-world analyst standards.',chips:['Autopsy','FTK Imager','Digital Forensics','Evidence Handling'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/digital-forensics-d431'},{icon:'&#x1F4C4;',label:'Autopsy Lab Report',url:'https://github.com/l8zydaz/wgu-projects/blob/main/digital-forensics-d431/autopsy-lab-report.md'}]},
+  {title:'Security Monitoring & Detection Program',context:'WGU IT Capstone C769 - Ablique Game Studios',desc:'Designed and deployed a centralized SIEM for a simulated 18-person game studio using Microsoft Sentinel. End-to-end log ingestion, detection rules for brute-force, privilege escalation, and abnormal auth patterns, validated through controlled attack simulations.',chips:['Microsoft Sentinel','Azure','KQL','MITRE ATT&CK','NIST 800-137'],links:[{icon:'&#x2197;',label:'GitHub Repo',url:'https://github.com/l8zydaz/l8zydaz.github.io'},{icon:'&#x1F4C4;',label:'Capstone Proposal',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-proposal.md'},{icon:'&#x1F4CB;',label:'Implementation Report',url:'https://github.com/l8zydaz/l8zydaz.github.io/blob/main/capstone-report.md'}]},
+  {title:'Digital Forensics Investigation',context:'WGU D431 - digital-forensics-d431',desc:'Mock cybercrime investigations using Autopsy and FTK Imager. Evidence acquisition, file system analysis, data recovery from compromised machines. Formal forensic reports with documented chain of custody.',chips:['Autopsy','FTK Imager','Digital Forensics','Evidence Handling'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/digital-forensics-d431'},{icon:'&#x1F4C4;',label:'Autopsy Lab Report',url:'https://github.com/l8zydaz/wgu-projects/blob/main/digital-forensics-d431/autopsy-lab-report.md'}]},
   {title:'Network Assessment & Security Awareness',context:'WGU C844 - emerging-tech-c844',desc:'Full network vulnerability and performance assessment using Nmap and Wireshark, followed by a security awareness training program covering AI-driven attacks, social engineering, and emerging adversary techniques.',chips:['Nmap','Wireshark','Vulnerability Assessment','Security Awareness'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/emerging-tech-c844'},{icon:'&#x1F4C4;',label:'Task 1 - Network Assessment',url:'https://github.com/l8zydaz/wgu-projects/blob/main/emerging-tech-c844/task-1-network-assessment.md'},{icon:'&#x1F4C4;',label:'Task 2 - Training Plan',url:'https://github.com/l8zydaz/wgu-projects/blob/main/emerging-tech-c844/task-2-wlan-mobile-plan.md'}]},
-  {title:'Legal Analysis & Ethical Framework',context:'WGU C841 - legal-issues-infosec-c841',desc:'Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA. Developed a complete ethical guidance framework and SATE training plan translating regulatory obligations into actionable organizational policy.',chips:['Compliance Analysis','HIPAA','SOX','ECPA'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/legal-issues-infosec-c841'},{icon:'&#x1F4C4;',label:'Task 1 - Legal Analysis',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-1-legal-analysis-summary.md'},{icon:'&#x1F4C4;',label:'Task 2 - SATE Plan',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-2-ethical-guidance-and-sate.md'}]},
-  {title:'Systems Analysis - WGU Award Recipient',context:'WGU D372 - systems-thinking-d372 - 2024',desc:'Applied Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes across three complex organizational scenarios. Task 1 awarded WGU Systems Thinking Award for excellence in applied systems modeling.',chips:['Systems Modeling','Causal Loop Diagrams','Root Cause Analysis'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/systems-thinking-d372'},{icon:'&#x1F4C4;',label:'Task 1',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-1-wildes-bramble-analysis.md'},{icon:'&#x1F4C4;',label:'Task 2',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-2-homelessness-case-archetype.md'},{icon:'&#x1F4C4;',label:'Task 3',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-3-shifting-the-burden.md'},{icon:'&#x1F3C6;',label:'Award Certificate',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/award.pdf'}]},
-  {title:'IAM Access Review Automation',context:'Personal Project - Python + Microsoft Graph API',desc:'Python tool connecting to Azure Entra ID via Microsoft Graph API to audit accounts for stale logins, missing MFA enrollment, over-permissioned roles, and disabled accounts still holding active licenses. Outputs CSV and HTML reports. Direct translation of IAM review work at Bindplane and SpartanNash. Maps to NIST 800-53 AC-2 and AC-6.',chips:['Python','Microsoft Graph API','Azure Entra ID','NIST 800-53 AC-2','IAM','Automation'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
-  {title:'Raspberry Pi 2W - Honeypot & Sensor Node',context:'Personal Project - Raspberry Pi 2W',desc:'Deploying a low-interaction honeypot on a Raspberry Pi 2W to log real-world connection attempts and attacker reconnaissance behavior. Feeding captured telemetry into a local ELK stack for analysis. Every connection attempt becomes real threat intel mapped to MITRE ATT&CK.',chips:['Raspberry Pi 2W','Honeypot','ELK Stack','MITRE ATT&CK','Threat Intel','Network Monitoring'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
-  {title:'Incident Response Playbook Library',context:'Personal Project - GitHub - NIST 800-61',desc:'A GitHub-hosted library of structured IR playbooks covering credential compromise, phishing, account takeover, endpoint anomaly, and unauthorized access. Each playbook includes a decision tree, containment steps, evidence collection checklist, escalation path, and post-incident documentation template. Written against NIST 800-61 and built to be reusable by any security team.',chips:['NIST 800-61','Incident Response','Documentation','Playbooks'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]}
+  {title:'Legal Analysis & Ethical Framework',context:'WGU C841 - legal-issues-infosec-c841',desc:'Analyzed the compliance posture of a fictional startup against HIPAA, SOX, and ECPA. Developed a complete ethical guidance framework and SATE training plan.',chips:['Compliance Analysis','HIPAA','SOX','ECPA'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/legal-issues-infosec-c841'},{icon:'&#x1F4C4;',label:'Task 1 - Legal Analysis',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-1-legal-analysis-summary.md'},{icon:'&#x1F4C4;',label:'Task 2 - SATE Plan',url:'https://github.com/l8zydaz/wgu-projects/blob/main/legal-issues-infosec-c841/task-2-ethical-guidance-and-sate.md'}]},
+  {title:'Systems Analysis - WGU Award Recipient',context:'WGU D372 - systems-thinking-d372 - 2024',desc:'Applied Iceberg Tool, Behavior Over Time graphs, Limits to Growth, and Shifting the Burden archetypes across three complex organizational scenarios. Task 1 awarded WGU Systems Thinking Award.',chips:['Systems Modeling','Causal Loop Diagrams','Root Cause Analysis'],links:[{icon:'&#x2197;',label:'Project Folder',url:'https://github.com/l8zydaz/wgu-projects/tree/main/systems-thinking-d372'},{icon:'&#x1F4C4;',label:'Task 1',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-1-wildes-bramble-analysis.md'},{icon:'&#x1F4C4;',label:'Task 2',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-2-homelessness-case-archetype.md'},{icon:'&#x1F4C4;',label:'Task 3',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/task-3-shifting-the-burden.md'},{icon:'&#x1F3C6;',label:'Award Certificate',url:'https://github.com/l8zydaz/wgu-projects/blob/main/systems-thinking-d372/award.pdf'}]},
+  {title:'IAM Access Review Automation',context:'Personal Project - Python + Microsoft Graph API',desc:'Python tool connecting to Azure Entra ID via Microsoft Graph API to audit accounts for stale logins, missing MFA, over-permissioned roles, and disabled accounts holding active licenses. Maps to NIST 800-53 AC-2 and AC-6.',chips:['Python','Microsoft Graph API','Azure Entra ID','NIST 800-53 AC-2','IAM'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
+  {title:'Raspberry Pi 2W - Honeypot & Sensor Node',context:'Personal Project - Raspberry Pi 2W',desc:'Low-interaction honeypot logging real-world connection attempts and attacker reconnaissance. Telemetry feeds into a local ELK stack. Every connection mapped to MITRE ATT&CK.',chips:['Raspberry Pi 2W','Honeypot','ELK Stack','MITRE ATT&CK','Threat Intel'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]},
+  {title:'Incident Response Playbook Library',context:'Personal Project - GitHub - NIST 800-61',desc:'Structured IR playbooks covering credential compromise, phishing, account takeover, endpoint anomaly, and unauthorized access. Decision trees, containment steps, evidence checklists, escalation paths. Written against NIST 800-61.',chips:['NIST 800-61','Incident Response','Documentation','Playbooks'],links:[{icon:'&#x2197;',label:'GitHub - Coming Soon',url:'https://github.com/l8zydaz'}]}
 ];
 
 // ══════════════════════════════════════════
 // SKILL STORIES
 // ══════════════════════════════════════════
 var skillStories={
-  'Suspicious Activity Response':'Primary function at SpartanNash — triaging account compromise events, unauthorized access attempts, and behavioral anomalies across identity platforms, mainframes, POS, and military access systems. 30+ incidents daily.',
-  'Incident Response (NIST 800-61)':'Applied daily at SpartanNash following the NIST 800-61 framework — detect, analyze, contain, eradicate, recover, and post-incident documentation. Also the foundation of the IR Playbook Library project.',
-  'Alert Monitoring & Triage':'Operated live SIEM dashboards at CU*Answers monitoring 300+ financial institutions during peak attack windows. Alert triage is also core to the Sentinel deployment in the WGU capstone.',
-  'Compromised Account Triage':'At SpartanNash, served as primary contact for InfoSec-escalated account compromise events — credential resets, session revocation, identity verification, and secure access remediation.',
-  'Endpoint Investigation':'Investigated endpoint devices across Windows, macOS, and Linux at SpartanNash — diagnosing malfunctions, abnormal behavior, and connectivity issues, escalating to infrastructure teams when needed.',
-  'Auth & Access Anomaly Investigation':'Investigated authentication and access anomalies at SpartanNash and CU*Answers — flagging abnormal logon patterns, session irregularities, and unauthorized access attempts.',
-  'Active Directory':'Core daily platform at SpartanNash — account unlocks, password resets, MFA enrollment, group membership management, and permission grants across a nationally distributed enterprise.',
-  'Azure Entra ID':'Identity governance platform at SpartanNash. Currently the target of the IAM Access Review Automation project — connecting via Microsoft Graph API to audit stale accounts, MFA gaps, and over-permissioned roles.',
-  'MFA Enrollment & Reregistration':'High-volume task at SpartanNash — enrolling and reregistering MFA for users across corporate, retail, warehouse, and military environments with varying device and compliance requirements.',
-  'BitLocker Recovery':'Performed BitLocker recovery key retrieval at SpartanNash for locked endpoint devices — coordinating with users and infrastructure teams to restore secure access.',
-  'Least Privilege Review':'Conducted formal least-privilege access reviews at Bindplane — identifying over-permissioned roles across SaaS platforms and recommending adjustments to reduce unauthorized access risk.',
-  'SailPoint':'Identity governance platform used in IAM workflows at SpartanNash for access management and provisioning tracking.',
-  'Permission Management':'Managed temporary and persistent permission grants at SpartanNash across enterprise identity platforms — balancing access requirements against security policy for thousands of users.',
-  'Microsoft Sentinel':'Primary SIEM platform for WGU IT Capstone — configured log ingestion from workstations and servers, authored KQL detection rules for brute-force, privilege escalation, and abnormal auth patterns. Validated through controlled attack simulations.',
-  'IBM iSeries (AS400)':'Operated 24/7 production and development IBM iSeries environments at CU*Answers supporting 300+ financial institutions — monitoring job failures, abnormal terminations, and system integrity alerts.',
-  'QSYSOPR':'Primary message queue monitoring tool at CU*Answers — used to investigate job failures, subsystem alerts, and operational anomalies across the AS400 environment in real time.',
-  'ROBOT Scheduler':'Job scheduling platform at CU*Answers — used to monitor scheduled batch jobs, identify failures, and coordinate reruns across production and development environments.',
-  'Smart Operator':'Automated operations monitoring tool at CU*Answers — used alongside QSYSOPR to track subsystem health and escalate alerts to on-call engineering teams.',
-  'Windows Event Logs':'Analyzed Windows Event Logs as part of endpoint investigations at SpartanNash and as a primary data source for the Microsoft Sentinel SIEM deployment in the WGU capstone.',
-  'Real-Time Session Monitoring':'Monitored active user sessions at CU*Answers during EOD/BOD operations — tracking programmer, CSR, and staff activity across jobs and subsystems to identify operational integrity risks.',
-  'CU*BASE':'Core banking and operations platform at CU*Answers — used to monitor credit union operations, investigate job failures, and maintain production stability across 300+ member institutions.',
-  'Fedline Advantage (Federal Reserve)':'Authenticated into Federal Reserve infrastructure via Fedline Advantage using FED token and multi-factor passphrase at CU*Answers — processing ACH files and verifying completion across all credit union environments.',
-  'Cherwell ITSM':'Primary incident management platform at SpartanNash — documenting 30+ daily incidents, tracking investigative steps, prioritizing service-impacting events, maintaining a 96% SLA resolution rate.',
-  'Citrix':'Remote access platform used at SpartanNash to support users across corporate, retail, and distributed environments — troubleshooting session issues and connectivity problems.',
-  'GoAnywhere (PGP/FTP/SFTP)':'Handled PGP-encrypted FTP and SFTP file transmissions at CU*Answers — processing credit card payment files to PSCU, FIS BASE2000, TMG, and Certegy daily with balance verification.',
-  'ACH Processing':'Processed ACH transactions at CU*Answers via Fedline Advantage — pulling and uploading ACH files into production, posting transactions, and verifying completion across all credit union environments in compliance with federal financial requirements.',
-  'DSS (Military Access)':'Managed access for military personnel and environments at SpartanNash — handling authentication, access grants, and incident response for military-specific compliance requirements.',
-  'Python':'Built YAML automation script at Bindplane to dynamically generate configuration structures across 100+ documentation files. Currently building the IAM Access Review Automation tool using Python + MSAL against Microsoft Graph API.',
-  'Bash':'Used for scripting and automation tasks — recon tooling, log parsing, and operational automation. Part of the home lab and personal project toolkit.',
-  'SQL':'Used for data querying and reporting tasks in enterprise environments and personal security tooling projects.',
-  'YAML':'Built Python automation at Bindplane to generate YAML configuration structures — eliminating repetitive manual formatting and improving consistency across 100+ structured documentation files.',
-  'Git / GitHub':'Used for version control and documentation at Bindplane — consolidated 500+ cross-functional artifacts into GitHub/GitBook docs-as-code system. All personal projects hosted and documented on GitHub.',
-  'Nmap / Zenmap':'Used for network vulnerability and performance assessment in WGU C844 — scanning for open ports, service identification, and traffic analysis alongside Wireshark.',
-  'Wireshark':'Used alongside Nmap for traffic analysis and packet inspection in the WGU C844 network assessment project.',
-  'Autopsy':'Used in WGU D431 Digital Forensics — conducted mock cybercrime investigations including evidence acquisition, file system analysis, and data recovery from compromised machines.',
-  'MITRE ATT&CK':'Detection rules in the WGU Sentinel capstone are mapped to ATT&CK techniques. The Raspberry Pi honeypot project maps all observed attacker behavior to ATT&CK in real time. Core framework for purple team thinking.',
-  'NIST 800-61':'Applied daily at SpartanNash for incident response workflows. Foundation of the IR Playbook Library. Also studied as part of the WGU B.S. program and CySA+ preparation.',
-  'NIST 800-30/37/53':'Studied and applied as part of WGU B.S. curriculum and professional compliance work — risk assessment (800-30), RMF (800-37), and security controls catalog (800-53 AC-2, AC-6 directly referenced in IAM automation project).',
-  'ISO 27001':'Directly supported ISO 27001 audit readiness at Bindplane — consolidating 500+ artifacts into a GitHub/GitBook docs-as-code system to strengthen control traceability and ownership accountability.',
-  'FedRAMP':'Supported FedRAMP documentation and compliance initiatives at Bindplane. Also operated in a FedRAMP-adjacent environment at CU*Answers handling Federal Reserve ACH infrastructure.',
-  'FFIEC / NCUA':'Operated in financial environments governed by FFIEC and NCUA frameworks at CU*Answers — supporting credit union operations, ACH processing, and security monitoring for 300+ regulated institutions.',
-  'SOC 2':'Studied and applied in compliance work at Bindplane — relevant to the vendor security reviews and documentation initiatives supporting SOC 2 control requirements.',
-  'ITIL':'Earned ITIL certification. Applied daily at SpartanNash — incident management, service request handling, escalation procedures, and SLA management all follow ITIL service management principles.'
+  'Suspicious Activity Response':'Primary function at SpartanNash - triaging account compromise events, unauthorized access attempts, and behavioral anomalies across identity platforms, mainframes, POS, and military access systems. 30+ incidents daily.',
+  'Incident Response (NIST 800-61)':'Applied daily at SpartanNash following NIST 800-61 - detect, analyze, contain, eradicate, recover. Also the foundation of the IR Playbook Library project.',
+  'Alert Monitoring & Triage':'Operated live SIEM dashboards at CU*Answers monitoring 300+ financial institutions during peak attack windows.',
+  'Compromised Account Triage':'At SpartanNash - InfoSec-escalated account compromise events, credential resets, session revocation, identity verification, secure access remediation.',
+  'Endpoint Investigation':'Investigated endpoint devices across Windows, macOS, and Linux at SpartanNash - malfunctions, abnormal behavior, connectivity issues.',
+  'Auth & Access Anomaly Investigation':'Flagging abnormal logon patterns, session irregularities, and unauthorized access attempts at SpartanNash and CU*Answers.',
+  'Active Directory':'Core daily platform at SpartanNash - account unlocks, password resets, MFA enrollment, group membership management, permission grants.',
+  'Azure Entra ID':'Identity governance at SpartanNash. Target of IAM Access Review Automation project via Microsoft Graph API.',
+  'MFA Enrollment & Reregistration':'High-volume task at SpartanNash across corporate, retail, warehouse, and military environments.',
+  'BitLocker Recovery':'BitLocker recovery key retrieval at SpartanNash - coordinating with users and infrastructure teams.',
+  'Least Privilege Review':'Formal access reviews at Bindplane - identifying over-permissioned roles and recommending adjustments.',
+  'SailPoint':'IAM workflows at SpartanNash for access management and provisioning tracking.',
+  'Permission Management':'Temporary and persistent permission grants at SpartanNash across enterprise identity platforms.',
+  'Microsoft Sentinel':'Primary SIEM for WGU IT Capstone - log ingestion, KQL detection rules, controlled attack simulations.',
+  'IBM iSeries (AS400)':'24/7 production environments at CU*Answers supporting 300+ financial institutions.',
+  'QSYSOPR':'Primary message queue monitoring at CU*Answers - job failures, subsystem alerts, anomalies in real time.',
+  'ROBOT Scheduler':'Job scheduling at CU*Answers - monitoring batch jobs, identifying failures, coordinating reruns.',
+  'Smart Operator':'Automated operations monitoring at CU*Answers - subsystem health and on-call escalation.',
+  'Windows Event Logs':'Endpoint investigations at SpartanNash and primary data source for Sentinel SIEM capstone.',
+  'Real-Time Session Monitoring':'Active user sessions at CU*Answers during EOD/BOD - tracking across jobs and subsystems.',
+  'CU*BASE':'Core banking platform at CU*Answers - operations monitoring, job failure investigation, production stability for 300+ institutions.',
+  'Fedline Advantage (Federal Reserve)':'Authenticated into Federal Reserve infrastructure using FED token and MFA passphrase - processing ACH files.',
+  'Cherwell ITSM':'Primary incident management at SpartanNash - 30+ daily incidents, 96% SLA resolution rate.',
+  'Citrix':'Remote access platform at SpartanNash across corporate, retail, and distributed environments.',
+  'GoAnywhere (PGP/FTP/SFTP)':'PGP-encrypted FTP/SFTP transmissions at CU*Answers to PSCU, FIS BASE2000, TMG, and Certegy daily.',
+  'ACH Processing':'ACH transactions at CU*Answers via Fedline Advantage in compliance with federal financial requirements.',
+  'DSS (Military Access)':'Authentication, access grants, and incident response for military environments at SpartanNash.',
+  'Python':'YAML automation at Bindplane across 100+ files. Building IAM Access Review tool with MSAL against Graph API.',
+  'Bash':'Scripting, log parsing, automation. Home lab and personal project toolkit.',
+  'SQL':'Data querying and reporting in enterprise environments and security tooling.',
+  'YAML':'Python automation at Bindplane generating YAML config structures across 100+ documentation files.',
+  'Git / GitHub':'Version control at Bindplane - 500+ artifacts into GitHub/GitBook docs-as-code. All projects at github.com/l8zydaz.',
+  'Nmap / Zenmap':'Network vulnerability assessment in WGU C844 - open ports, service identification, traffic analysis.',
+  'Wireshark':'Traffic analysis and packet inspection in WGU C844.',
+  'Autopsy':'Digital forensics in WGU D431 - evidence acquisition, file system analysis, data recovery.',
+  'MITRE ATT&CK':'Capstone detection rules mapped to ATT&CK. Pi honeypot maps attacker behavior to ATT&CK in real time.',
+  'NIST 800-61':'Applied daily at SpartanNash. Foundation of IR Playbook Library. Core to CySA+ and WGU B.S.',
+  'NIST 800-30/37/53':'Risk assessment (800-30), RMF (800-37), security controls catalog (800-53 AC-2, AC-6 in IAM project).',
+  'ISO 27001':'Supported ISO 27001 audit readiness at Bindplane - 500+ artifacts into docs-as-code.',
+  'FedRAMP':'FedRAMP documentation at Bindplane. FedRAMP-adjacent environment at CU*Answers with Federal Reserve infrastructure.',
+  'FFIEC / NCUA':'Financial environments at CU*Answers - supporting 300+ regulated credit union institutions.',
+  'SOC 2':'Compliance work at Bindplane - vendor security reviews and SOC 2 control documentation.',
+  'ITIL':'Earned ITIL certification. Applied daily at SpartanNash - incident management, SLA, escalation procedures.'
 };
+
+// ══════════════════════════════════════════
+// THREAT TICKER
+// ══════════════════════════════════════════
+var threatFeeds=[
+  {text:'CISA KEV UPDATE: New actively exploited vulnerabilities added to Known Exploited Vulnerabilities catalog',sev:'high'},
+  {text:'MITRE ATT&CK v15 released - 14 new techniques added across Enterprise and Mobile matrices',sev:'med'},
+  {text:'Microsoft Patch Tuesday: 59 CVEs patched including 5 zero-days under active exploitation',sev:'high'},
+  {text:'Threat Actor: APT29 targeting cloud identity providers via token theft - MITRE T1528',sev:'high'},
+  {text:'NIST SP 800-53 Rev 6 public draft - IAM controls AC-2 and AC-6 updated',sev:'med'},
+  {text:'FBI IC3 Alert: BEC attacks increased 17% YOY - credential phishing primary vector',sev:'med'},
+  {text:'NSA Advisory: MFA bypass via adversary-in-the-middle proxy attacks increasing',sev:'high'},
+  {text:'CISA: Ivanti zero-day under active exploitation - patch immediately',sev:'high'},
+  {text:'Ransomware: BlackCat/ALPHV targeting healthcare and supply chain sectors',sev:'high'},
+  {text:'Identity threat: Attacker dwell time in Entra ID averaging 72 hours before detection',sev:'med'},
+  {text:'SANS ISC: Brute force against RDP elevated - monitor Windows Event 4625',sev:'med'},
+  {text:'Active campaign: Spear-phishing targeting IAM admins with fake Entra ID portals',sev:'high'},
+  {text:'Honeypot data: SSH brute force averaging 2,400 attempts/day from 47 distinct ASNs',sev:'med'},
+  {text:'NIST CSF 2.0 published - Govern function added, expanded supply chain risk guidance',sev:'med'},
+  {text:'CISAgov: Financial institutions targeted by LockBit 3.0 affiliates - offline backups critical',sev:'high'},
+];
+function buildTicker(){
+  var track=document.getElementById('ticker-track');
+  if(!track) return;
+  var all=threatFeeds.concat(threatFeeds);
+  var items='';
+  all.forEach(function(f){
+    items+='<span class="ticker-item severity-'+f.sev+'">&#x25B6; '+f.text+'</span>';
+    items+='<span class="ticker-item ticker-dot">&#x2014;&#x2014;&#x2014;</span>';
+  });
+  track.innerHTML=items;
+}
+
+// ══════════════════════════════════════════
+// CONTACT FORM — sendNote()
+// ══════════════════════════════════════════
+function submitContact(){
+  var name    = document.getElementById('cf-name').value.trim();
+  var email   = document.getElementById('cf-email').value.trim();
+  var company = document.getElementById('cf-company').value.trim();
+  var reason  = document.getElementById('cf-reason').value;
+  var message = document.getElementById('cf-message').value.trim();
+  var errEl   = document.getElementById('cf-error');
+  var btn     = document.getElementById('cf-submit');
+  var lbl     = document.getElementById('cf-submit-label');
+  errEl.textContent='';
+  if(!name)   {errEl.textContent='// name is required.';return;}
+  if(!email||email.indexOf('@')<0){errEl.textContent='// valid email required.';return;}
+  if(!message){errEl.textContent='// message cannot be empty.';return;}
+  btn.disabled=true;
+  lbl.textContent='// sending...';
+  var subject=encodeURIComponent('[Portfolio] '+(reason||'Contact')+' from '+name+(company?' @ '+company:''));
+  var body=encodeURIComponent('NAME: '+name+'\nEMAIL: '+email+'\nCOMPANY: '+(company||'n/a')+'\nREASON: '+(reason||'n/a')+'\n\nMESSAGE:\n'+message+'\n\n// sent via kiarahp.github.io');
+  setTimeout(function(){
+    window.location.href='mailto:kiarahp@protonmail.com?subject='+subject+'&body='+body;
+    document.getElementById('cf-success').classList.add('show');
+    lbl.textContent='// sent';
+  },600);
+}
+
+// Contact kanji bg
+function initContactKanji(){
+  var bg=document.getElementById('dn-kanji-bg');
+  if(!bg) return;
+  var chars=['死','神','魂','亡','暗','屑','影','血','火','心'];
+  for(var i=0;i<12;i++){
+    var el=document.createElement('div');
+    el.className='dn-kanji-float';
+    el.textContent=chars[Math.floor(Math.random()*chars.length)];
+    el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(3+Math.random()*7)+'rem;animation-duration:'+(18+Math.random()*22)+'s;animation-delay:'+(Math.random()*-25)+'s;';
+    bg.appendChild(el);
+  }
+}
 
 // ══════════════════════════════════════════
 // SPLASH
@@ -697,7 +1572,6 @@ var spTarget='Kiarah Pettaway',spIdx=0;
 var spEl=document.getElementById('sp-text');
 var spSub=document.getElementById('sp-sub');
 var spEnter=document.getElementById('sp-enter');
-
 function typeSplash(){
   if(spIdx<=spTarget.length){
     spEl.innerHTML=spTarget.slice(0,spIdx)+'<span class="sp-cur"></span>';
@@ -709,12 +1583,10 @@ function typeSplash(){
     setTimeout(function(){enterSite();},3800);
   }
 }
-
 var kanjiList=['死','監','探','赤','紫','攻','守','技','術','血','鞄','影','力','知'];
 var spKanji=document.getElementById('sp-kanji');
 function spawnKanji(){
-  var el=document.createElement('div');
-  el.className='sp-kanji';
+  var el=document.createElement('div');el.className='sp-kanji';
   el.textContent=kanjiList[Math.floor(Math.random()*kanjiList.length)];
   el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(2+Math.random()*4)+'rem;animation-duration:'+(15+Math.random()*20)+'s;animation-delay:'+(Math.random()*-20)+'s;position:absolute;';
   spKanji.appendChild(el);
@@ -722,14 +1594,16 @@ function spawnKanji(){
 }
 for(var k=0;k<12;k++) spawnKanji();
 setInterval(spawnKanji,2000);
-
 window.addEventListener('DOMContentLoaded',function(){
   setTimeout(typeSplash,800);
+  buildTicker();
+  initContactKanji();
+  var dd=document.getElementById('dossier-date');
+  if(dd) dd.textContent=new Date().toISOString().split('T')[0].replace(/-/g,'.');
 });
-
 function enterSite(){
   var sp=document.getElementById('splash');
-  if(!sp || sp.style.display==='none') return;
+  if(!sp||sp.style.display==='none') return;
   sp.classList.add('hide');
   setTimeout(function(){
     sp.style.display='none';
@@ -745,7 +1619,7 @@ function enterSite(){
 document.addEventListener('keydown',function(e){if(e.key==='Enter') enterSite();});
 document.addEventListener('click',function(e){
   var sp=document.getElementById('splash');
-  if(sp && sp.style.display!=='none' && spEnter.classList.contains('show')) enterSite();
+  if(sp&&sp.style.display!=='none'&&spEnter.classList.contains('show')) enterSite();
 },{once:true});
 
 // ══════════════════════════════════════════
@@ -753,9 +1627,10 @@ document.addEventListener('click',function(e){
 // ══════════════════════════════════════════
 var curPage='home';
 var wipe=document.getElementById('page-wipe');
-
+var loadBar=document.getElementById('page-load-bar');
 function goPage(name){
   if(name===curPage) return;
+  if(loadBar){loadBar.style.width='0';loadBar.classList.add('loading');}
   wipe.className='page-wipe in';
   setTimeout(function(){
     document.getElementById('page-'+curPage).classList.remove('active');
@@ -769,19 +1644,19 @@ function goPage(name){
       b.classList.toggle('active',b.getAttribute('data-page')===name);
     });
     wipe.className='page-wipe out';
-    setTimeout(function(){wipe.className='page-wipe';initReveal();updateProgress(0);},60);
+    setTimeout(function(){
+      wipe.className='page-wipe';
+      if(loadBar) loadBar.classList.remove('loading');
+      initReveal();
+      updateProgress(0);
+    },60);
   },350);
 }
-
-// ══════════════════════════════════════════
-// MOBILE NAV
-// ══════════════════════════════════════════
 function toggleMobileNav(){
   var menu=document.getElementById('mobile-nav');
   var ham=document.getElementById('nav-ham');
-  var isOpen=menu.classList.contains('open');
-  if(isOpen){menu.classList.remove('open');ham.classList.remove('open');}
-  else{menu.classList.add('open');ham.classList.add('open');}
+  menu.classList.toggle('open');
+  ham.classList.toggle('open');
 }
 function closeMobileNav(){
   document.getElementById('mobile-nav').classList.remove('open');
@@ -792,15 +1667,11 @@ function closeMobileNav(){
 // SCROLL PROGRESS
 // ══════════════════════════════════════════
 var progressBar=document.getElementById('progress-bar');
-function updateProgress(pct){
-  if(progressBar) progressBar.style.width=pct+'%';
-}
-
+function updateProgress(pct){if(progressBar) progressBar.style.width=pct+'%';}
 document.querySelectorAll('.page').forEach(function(pg){
   pg.addEventListener('scroll',function(){
-    var scrolled=pg.scrollTop;
-    var total=pg.scrollHeight - pg.clientHeight;
-    updateProgress(total>0?(scrolled/total*100):0);
+    var s=pg.scrollTop,t=pg.scrollHeight-pg.clientHeight;
+    updateProgress(t>0?(s/t*100):0);
   });
 });
 
@@ -821,7 +1692,6 @@ function initReveal(){
 var names=['Kiarah','Kira','Kasai','Kurenai','Kiseki'];
 var hIdx=0,hChar=0,hDel=false,hStarted=false;
 var hEl,hAlias;
-
 function startHomeName(){
   if(hStarted) return;
   hStarted=true;
@@ -832,30 +1702,17 @@ function startHomeName(){
   hEl.innerHTML=names[0]+'<span class="type-cur"></span>';
   setTimeout(function(){hDel=true;typeHomeName();},2400);
 }
-
 function typeHomeName(){
   var cur=names[hIdx];
   if(!hDel){
     hChar++;
     hEl.innerHTML=cur.slice(0,hChar)+'<span class="type-cur"></span>';
-    if(hChar===cur.length){
-      hDel=true;
-      // Show alias label for non-real names
-      if(hIdx>0 && hAlias){hAlias.classList.add('show');}
-      setTimeout(typeHomeName,1900);
-      return;
-    }
+    if(hChar===cur.length){hDel=true;if(hIdx>0&&hAlias)hAlias.classList.add('show');setTimeout(typeHomeName,1900);return;}
     setTimeout(typeHomeName,90+Math.random()*40);
   } else {
     hChar--;
     hEl.innerHTML=cur.slice(0,hChar)+'<span class="type-cur"></span>';
-    if(hChar===0){
-      hDel=false;
-      if(hAlias) hAlias.classList.remove('show');
-      hIdx=(hIdx+1)%names.length;
-      setTimeout(typeHomeName,320);
-      return;
-    }
+    if(hChar===0){hDel=false;if(hAlias)hAlias.classList.remove('show');hIdx=(hIdx+1)%names.length;setTimeout(typeHomeName,320);return;}
     setTimeout(typeHomeName,52);
   }
 }
@@ -863,35 +1720,19 @@ function typeHomeName(){
 // ══════════════════════════════════════════
 // BG PARTICLES
 // ══════════════════════════════════════════
-var bgC=document.getElementById('bg-canvas');
-var bgX=bgC.getContext('2d');
-var bgP=[];
+var bgC=document.getElementById('bg-canvas'),bgX=bgC.getContext('2d'),bgP=[];
 function resizeBg(){bgC.width=window.innerWidth;bgC.height=window.innerHeight;}
 resizeBg();
 window.addEventListener('resize',resizeBg);
-function newPart(scatter){
-  return{x:Math.random()*bgC.width,y:scatter?Math.random()*bgC.height:-8,
-    sz:Math.random()*2.5+0.4,vy:Math.random()*.5+.15,vx:(Math.random()-.5)*.3,
-    drift:Math.random()*Math.PI*2,ds:Math.random()*.008+.004,
-    op:Math.random()*.35+.05,ember:Math.random()<.07};
-}
-function initParticles(){
-  bgP=[];
-  for(var i=0;i<65;i++) bgP.push(newPart(true));
-  animBg();
-}
+function newPart(scatter){return{x:Math.random()*bgC.width,y:scatter?Math.random()*bgC.height:-8,sz:Math.random()*2.5+0.4,vy:Math.random()*.5+.15,vx:(Math.random()-.5)*.3,drift:Math.random()*Math.PI*2,ds:Math.random()*.008+.004,op:Math.random()*.35+.05,ember:Math.random()<.07};}
+function initParticles(){bgP=[];for(var i=0;i<65;i++)bgP.push(newPart(true));animBg();}
 function animBg(){
   bgX.clearRect(0,0,bgC.width,bgC.height);
   bgP.forEach(function(p){
     p.drift+=p.ds;p.x+=p.vx+Math.sin(p.drift)*.25;p.y+=p.vy;
     if(p.y>bgC.height+8) Object.assign(p,newPart(false));
     bgX.save();
-    if(p.ember){
-      var g=bgX.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);
-      g.addColorStop(0,'rgba(255,60,0,'+p.op+')');
-      g.addColorStop(1,'transparent');
-      bgX.fillStyle=g;bgX.beginPath();bgX.arc(p.x,p.y,p.sz*3,0,Math.PI*2);bgX.fill();
-    }
+    if(p.ember){var g=bgX.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);g.addColorStop(0,'rgba(255,60,0,'+p.op+')');g.addColorStop(1,'transparent');bgX.fillStyle=g;bgX.beginPath();bgX.arc(p.x,p.y,p.sz*3,0,Math.PI*2);bgX.fill();}
     bgX.translate(p.x,p.y);bgX.rotate(p.drift);
     bgX.fillStyle=p.ember?'rgba(255,120,40,'+p.op+')':'rgba(40,30,30,'+p.op+')';
     bgX.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz*.6);
@@ -906,8 +1747,7 @@ function animBg(){
 function initDrips(){
   var bar=document.getElementById('drip-bar');
   for(var i=0;i<50;i++){
-    var d=document.createElement('div');
-    d.className='drip';
+    var d=document.createElement('div');d.className='drip';
     d.style.cssText='width:'+(Math.random()*2+1)+'px;margin-left:'+(Math.random()*40)+'px;animation-duration:'+(3+Math.random()*6)+'s;animation-delay:'+(Math.random()*8)+'s;opacity:'+(0.2+Math.random()*.6);
     bar.appendChild(d);
   }
@@ -924,41 +1764,34 @@ document.addEventListener('mousemove',function(e){
 });
 
 // ══════════════════════════════════════════
-// CLICKABLE SKILL PILLS WITH STORIES
+// SKILL PILLS
 // ══════════════════════════════════════════
 var tooltip=null;
 function initSkillPills(){
-  // Create tooltip element
   tooltip=document.createElement('div');
   tooltip.className='skill-tooltip';
   tooltip.innerHTML='<div class="skill-tooltip-title" id="tt-title"></div><div id="tt-body"></div>';
   document.body.appendChild(tooltip);
-
   document.querySelectorAll('.skill-pill').forEach(function(pill){
-    var name=pill.textContent.trim().replace(/\u0026amp;/g,'&').replace(/&amp;/g,'&');
+    var name=pill.textContent.trim().replace(/&amp;/g,'&').replace(/&amp;/g,'&');
     if(skillStories[name]){
       pill.classList.add('has-story');
       pill.addEventListener('mouseenter',function(e){
         document.getElementById('tt-title').textContent=name;
         document.getElementById('tt-body').textContent=skillStories[name];
-        tooltip.classList.add('show');
-        positionTooltip(e);
+        tooltip.classList.add('show');positionTooltip(e);
       });
       pill.addEventListener('mousemove',positionTooltip);
-      pill.addEventListener('mouseleave',function(){
-        tooltip.classList.remove('show');
-      });
+      pill.addEventListener('mouseleave',function(){setTimeout(function(){tooltip.classList.remove('show');},80);});
     }
   });
 }
-
 function positionTooltip(e){
   if(!tooltip) return;
   var x=e.clientX+16,y=e.clientY-10;
   if(x+330>window.innerWidth) x=e.clientX-340;
   if(y+120>window.innerHeight) y=e.clientY-130;
-  tooltip.style.left=x+'px';
-  tooltip.style.top=y+'px';
+  tooltip.style.left=x+'px';tooltip.style.top=y+'px';
 }
 
 // ══════════════════════════════════════════
@@ -969,30 +1802,17 @@ function openModal(idx){
   document.getElementById('modalTitle').textContent=p.title;
   document.getElementById('modalContext').textContent=p.context;
   document.getElementById('modalDesc').textContent=p.desc;
-  document.getElementById('modalStack').innerHTML=p.chips.map(function(ch){
-    return '<span class="chip chip-r">'+ch+'</span>';
-  }).join('');
+  document.getElementById('modalStack').innerHTML=p.chips.map(function(ch){return '<span class="chip chip-r">'+ch+'</span>';}).join('');
   document.getElementById('modalLinks').innerHTML=p.links.map(function(l){
     var s=l.url.replace('https://github.com/','');
-    return '<a href="'+l.url+'" target="_blank" class="modal-link-row">'+
-      '<span class="modal-link-icon">'+l.icon+'</span>'+
-      '<span class="modal-link-text">'+l.label+'</span>'+
-      '<span class="modal-link-url">'+s+'</span></a>';
+    return '<a href="'+l.url+'" target="_blank" class="modal-link-row"><span class="modal-link-icon">'+l.icon+'</span><span class="modal-link-text">'+l.label+'</span><span class="modal-link-url">'+s+'</span></a>';
   }).join('');
   document.getElementById('projectModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
-
-function closeModal(){
-  document.getElementById('projectModal').classList.remove('open');
-  document.body.style.overflow='';
-}
-document.getElementById('projectModal').addEventListener('click',function(e){
-  if(e.target===this) closeModal();
-});
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') closeModal();
-});
+function closeModal(){document.getElementById('projectModal').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('projectModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 </script>
 </body>
 </html>
